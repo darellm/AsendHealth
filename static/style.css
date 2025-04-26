@@ -7,15 +7,15 @@
    2) GLOBAL / BASE STYLES
    ------------------------------------------------------ */
 :root {
-  --primary-color: #4CAF50;
-  --primary-dark: #388E3C;
-  --primary-light: #A5D6A7;
+  --primary-color: #3AA6B9;
+  --primary-dark: #2C7D8B;
+  --primary-light: #79C9D6;
   --text-dark: #2C3E50;
   --text-light: #ECF0F1;
   --background-light: #F5F7FA;
   --accent-color: #FF5722;
   --error-color: #E53935;
-  --success-color: #43A047;
+  --success-color: #4BB543;
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);

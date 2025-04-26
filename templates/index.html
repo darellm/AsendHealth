@@ -46,7 +46,7 @@
             localStorage.setItem("pointId", data.point_id);
           }
           localStorage.setItem("patientGuid", data.guid || password);
-          window.location.href = "/home";
+          window.location.href = "/maya";
         } else {
           const error = await response.json();
           document.getElementById("error-message").innerText = error.message || "Login failed";

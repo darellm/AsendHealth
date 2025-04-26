@@ -11,11 +11,9 @@
   <header>
     <nav>
       <ul>
-        <li><a href="/home.html">Home</a></li>
+        <li><a href="/maya" class="active">Areya</a></li>
         <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/maya" class="active">Maya</a></li>
         <li><a href="/appointments">Appointments</a></li>
-        <li><a href="/feedback">Feedback</a></li>
         <li><a href="#" id="logoutBtn">Logout</a></li>
       </ul>
     </nav>
@@ -78,7 +76,7 @@
         e.preventDefault();
         localStorage.removeItem("pointId");
         localStorage.removeItem("patientGuid");
-        window.location.href = "/login";
+        window.location.href = "https://asendhealth.com/";
       });
 
       try {

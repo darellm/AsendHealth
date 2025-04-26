@@ -2,6 +2,7 @@ import os
 import pg8000
 import ssl
 import certifi
+import json
 from google.cloud.sql.connector import Connector
 import psycopg2
 import psycopg2.extras
@@ -25,6 +26,7 @@ def get_connection():
    Establishes a connection to the PostgreSQL database on Google Cloud SQL.
    """
    conn = connector.connect(
+   #conn = psycopg2.connect(
     INSTANCE_CONNECTION_NAME,
        "pg8000",
        user=DB_USER,
