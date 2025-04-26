@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient Portal - Maya</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/home.html">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/maya" class="active">Maya</a></li>
+        <li><a href="/appointments">Appointments</a></li>
+        <li><a href="/feedback">Feedback</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <div class="maya-container">
+      <div class="maya-header">
+        <h1>Maya</h1>
+        <!-- Smaller Lottie for Maya icon (Animation5.json) -->
+        <div class="maya-animation-container">
+          <lottie-player
+            class="maya-animation"
+            src="{{ url_for('static', filename='Animation5.json') }}"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay>
+          </lottie-player>
+        </div>
+      </div>
+
+      <p>Welcome Sir, I am Maya, your Advanced AI Medical assistant. How can I assist you today?</p>
+      
+      <!-- Container for Qdrant-based conversations -->
+      <section id="conversations-section">
+        <h2>Conversations</h2>
+        <div id="conversations">
+          <!-- Fetched conversation items go here -->
+        </div>
+      </section>
+
+      <!-- Chatbot Interaction -->
+      <section id="chatbot-section">
+        <h2>Ask Maya a Question</h2>
+        <div class="chatbot-ui">
+          <input type="text" id="user-query" placeholder="Type your medical question..." />
+          <button id="ask-maya-btn">Ask Maya</button>
+          <label>
+            <input type="checkbox" id="show-thinking" checked> Show Maya's thinking process
+          </label>
+        </div>
+        <div id="chatbot-responses">
+          <!-- Chatbot responses will appear here -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      // Basic setup & conversation retrieval from Qdrant
+      const pointId = localStorage.getItem("pointId");
+      if (!pointId) {
+        window.location.href = "/login";
+        return;
+      }
+
+      document.getElementById("logoutBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        localStorage.removeItem("pointId");
+        localStorage.removeItem("patientGuid");
+        window.location.href = "/login";
+      });
+
+      try {
+        // Retrieve existing conversation from Qdrant
+        const response = await fetch("/api/patient-records", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ point_id: pointId })
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch patient data.");
+
+        const patientData = await response.json();
+        console.log("Patient Data:", patientData);
+
+        // Display existing conversation if present
+        if (patientData.conversations && patientData.conversations.length > 0) {
+          const conversationHTML = patientData.conversations.map(convo => `
+            <div class="conversation-item">
+              <p>
+                <strong>${convo.sender}</strong>
+                <span class="timestamp">(${new Date(convo.timestamp).toLocaleString()})</span>
+              </p>
+              <p>${convo.message}</p>
+            </div>
+          `).join("");
+          document.getElementById("conversations").innerHTML = conversationHTML;
+        } else {
+          document.getElementById("conversations").innerHTML = "<p>No conversations found.</p>";
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+        document.getElementById("conversations").innerHTML = "<p>Error loading conversations.</p>";
+      }
+
+      // Chatbot button logic
+      document.getElementById("ask-maya-btn").addEventListener("click", async function() {
+        const userQuery = document.getElementById("user-query").value.trim();
+        const showThinking = document.getElementById("show-thinking").checked;
+        if (!userQuery) return;
+
+        // Clear input
+        document.getElementById("user-query").value = "";
+
+        // Display user's query
+        const chatbotResponses = document.getElementById("chatbot-responses");
+        chatbotResponses.innerHTML += `
+          <div class="conversation-item user-message">
+            <p><strong>You:</strong></p>
+            <p>${userQuery}</p>
+          </div>
+        `;
+
+        try {
+          const resp = await fetch("/api/chatbot", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              query: userQuery, 
+              point_id: pointId,
+              show_thinking: showThinking
+            })
+          });
+          
+          if (!resp.ok) throw new Error("Chatbot request failed.");
+          
+          const data = await resp.json();
+          console.log("Chatbot Response:", data);
+
+          displayMayaResponse(data, chatbotResponses);
+          
+        } catch (err) {
+          console.error("Error calling chatbot:", err);
+          chatbotResponses.innerHTML += `
+            <div class="conversation-item maya-message error">
+              <p><strong>Maya:</strong></p>
+              <p>Sorry, something went wrong.</p>
+            </div>
+          `;
+        }
+      });
+    });
+
+    // Update the response handling
+    function displayMayaResponse(data, chatbotResponses) {
+      let responseHTML = '<div class="conversation-item maya-message">';
+      
+      // Only show thinking process if explicitly enabled and not empty
+      if (data.show_thinking && data.thinking && document.getElementById("show-thinking").checked) {
+        responseHTML += `
+          <details class="thinking-details">
+            <summary>View Maya's Analysis</summary>
+            <div class="thinking-process">
+              ${data.thinking.split('\n').map(line => `<p>${line.trim()}</p>`).join('')}
+            </div>
+          </details>
+        `;
+      }
+      
+      // Format the main response
+      const formattedReply = data.reply
+        .replace(/##\s+([^\n]+)/g, '<h3>$1</h3>')  // Convert ## headers to h3
+        .replace(/•\s+([^\n]+)/g, '<li>$1</li>')   // Convert bullet points to list items
+        .replace(/\[AI Medical Disclaimer:[^\]]+\]/g, '<div class="disclaimer">$&</div>');
+      
+      responseHTML += `
+        <div class="maya-final-response">
+          <p><strong>Maya:</strong></p>
+          <div class="response-content">${formattedReply}</div>
+        </div>
+      </div>`;
+      
+      chatbotResponses.innerHTML += responseHTML;
+    }
+  </script>
+
+  <style>
+    .thinking-process {
+      background: #f5f5f5;
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 3px solid #007bff;
+    }
+    .thinking-process pre {
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: inherit;
+    }
+    .final-response {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .thinking-details {
+      margin: 10px 0;
+      padding: 5px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+    .thinking-details summary {
+      cursor: pointer;
+      color: #666;
+      font-size: 0.9em;
+    }
+    .thinking-process {
+      padding: 10px;
+      margin-top: 5px;
+      border-left: 3px solid #007bff;
+      font-size: 0.9em;
+    }
+    .maya-final-response {
+      margin-top: 10px;
+    }
+    .maya-final-response p {
+      margin: 5px 0;
+    }
+    .maya-final-response h3 {
+      color: #2c3e50;
+      margin: 15px 0 10px 0;
+      font-size: 1.1em;
+    }
+    
+    .maya-final-response li {
+      margin: 5px 0;
+      list-style-type: none;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .maya-final-response li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #007bff;
+    }
+    
+    .disclaimer {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    
+    .response-content {
+      line-height: 1.5;
+    }
+  </style>
+</body>
+</html>

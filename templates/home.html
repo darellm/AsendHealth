@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ascend Health Patient Portal - Home</title>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+
+</head>
+<body>
+
+  <!-- Navigation Header -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/maya">Maya</a></li>
+        <li><a href="/appointments">Appointments</a></li>
+        <li><a href="/feedback">Feedback</a></li>
+        <li><a href="#" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="home-container">
+      <!-- 2) Hero Section with a second Lottie behind the text -->
+      <section class="hero-section">
+        <!-- Hero Text Content -->
+        <div class="hero-content">
+          <h1>Welcome to Asend Health Patient Portal</h1>
+          <p>Select an option from the menu above to proceed.</p>
+          <a href="/dashboard" class="hero-button">Go to Dashboard</a>
+        </div>
+
+        <!-- Lottie behind the hero text using Animation.json -->
+        <div class="three-d-image-container">
+          <lottie-player 
+            class="lottie-animation"
+            src="{{ url_for('static', filename='Animation.json') }}"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay>
+          </lottie-player>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Check if user is logged in, plus logout script -->
+  <script>
+    const pointId = localStorage.getItem("pointId");
+    if (!pointId) {
+      window.location.href = "/login";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      localStorage.removeItem("pointId");
+      localStorage.removeItem("patientGuid");
+      window.location.href = "/login";
+    });
+  </script>
+</body>
+</html>

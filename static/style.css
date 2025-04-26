@@ -1,0 +1,792 @@
+/* ------------------------------------------------------
+   1) GOOGLE FONT IMPORT - Added more weights and a secondary font
+   ------------------------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600&display=swap');
+
+/* ------------------------------------------------------
+   2) GLOBAL / BASE STYLES
+   ------------------------------------------------------ */
+:root {
+  --primary-color: #4CAF50;
+  --primary-dark: #388E3C;
+  --primary-light: #A5D6A7;
+  --text-dark: #2C3E50;
+  --text-light: #ECF0F1;
+  --background-light: #F5F7FA;
+  --accent-color: #FF5722;
+  --error-color: #E53935;
+  --success-color: #43A047;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --transition-speed: 0.3s;
+  --border-radius-sm: 5px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 15px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* We handle the background with Lottie, so remove any gradient from html, body. */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* overflow: hidden; Hide scrollbars if you want a pinned full-screen background */
+  position: relative;
+  font-family: 'Poppins', Arial, sans-serif;
+  color: var(--text-dark);
+  line-height: 1.6;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 1) Full-page background (Animation3.json) */
+#bg-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* behind everything else */
+  object-fit: cover; /* fill the entire screen */
+}
+
+/* Replaces inline styles for the background Lottie player */
+.full-screen-lottie {
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ------------------------------------------------------
+   3) HEADER & NAVIGATION (Common to All Pages)
+   ------------------------------------------------------ */
+header {
+  background-color: var(--primary-color);
+  background: linear-gradient(90deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+nav ul {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+nav ul li {
+  position: relative;
+}
+nav a {
+  text-decoration: none;
+  color: var(--text-light);
+  font-weight: 500;
+  font-size: 1.05rem;
+  padding: 8px 0;
+  transition: all var(--transition-speed) ease;
+}
+nav a:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+nav a.active {
+  font-weight: 600;
+  position: relative;
+}
+nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-light);
+  border-radius: 2px;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-pic {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid white;
+  object-fit: cover;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-speed) ease;
+}
+.profile-pic:hover {
+  transform: scale(1.1);
+}
+
+/* ------------------------------------------------------
+   4) LOGIN PAGE
+   ------------------------------------------------------ */
+/* The login-container is used to center the login card on top of the Lottie background. */
+.login-container {
+  position: relative;
+  z-index: 1; /* ensures the form is above the Lottie animation */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.login-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 40px;
+  border-radius: var(--border-radius-lg);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+.login-card h1,
+.login-card h2 {
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+.login-card input {
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--border-radius-sm);
+  width: 100%;
+  font-size: 1rem;
+  transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+.login-card input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+.login-card button {
+  padding: 14px 24px;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  color: #fff;
+  transition: all var(--transition-speed) ease;
+  font-size: 1rem;
+  width: 100%;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+.login-card button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.login-card button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+.login-card .forgot-password {
+  display: block;
+  margin-top: 15px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* ------------------------------------------------------
+   5) DASHBOARD LAYOUT & COMMON CONTAINER STYLES
+   ------------------------------------------------------ */
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 25px;
+  padding: 30px;
+  max-width: 1300px;
+  margin: 0 auto;
+  flex: 1;
+}
+.section {
+  background: #ffffff;
+  border-radius: var(--border-radius-md);
+  padding: 25px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+}
+.section:hover {
+  transform: translateY(-7px);
+  box-shadow: var(--shadow-lg);
+}
+.section h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #fff;
+  font-weight: 600;
+  position: relative;
+  display: inline-block;
+}
+.section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 2px;
+}
+
+/* ------------------------------------------------------
+   6) INDIVIDUAL SECTIONS (Dashboard Specific)
+   ------------------------------------------------------ */
+/* Personal Information Section */
+#personal-info-section {
+  background: linear-gradient(135deg, #8e9eab 0%, #5e686f 100%);
+  color: #fff;
+}
+/* Medical Conditions Section */
+#medical-conditions-section {
+  background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+  color: #fff;
+}
+/* Medications Section */
+#medications-section {
+  background: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
+  color: #fff;
+}
+/* Activity Log Section */
+#activity-log-section {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: #fff;
+}
+/* Health Metrics Section */
+#health-metrics-section {
+  background: linear-gradient(135deg, #5c258d 0%, #4389a2 100%);
+  color: #fff;
+}
+/* Alerts Section */
+#alerts-section {
+  background: linear-gradient(135deg, #fe8c00 0%, #f83600 100%);
+  color: #fff;
+}
+.section-content {
+  margin-top: 15px;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.info-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.info-row .label {
+  font-weight: 500;
+  opacity: 0.9;
+}
+.info-row .value {
+  font-weight: 600;
+}
+.section-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 2rem;
+  opacity: 0.3;
+}
+
+/* ------------------------------------------------------
+   7) NEW PAGES - HOME, MAYA, APPOINTMENTS, FEEDBACK
+   ------------------------------------------------------ */
+/* Hero Section Container (Animation.json behind text) */
+.hero-section {
+  position: relative;  /* allows absolute positioning for the Lottie */
+  background-color: #fff;
+  border-radius: var(--border-radius-lg);
+  padding: 60px;
+  margin-bottom: 50px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden; 
+  min-height: 800px;    /* clip the hero animation inside the box */
+}
+.hero-content {
+  position: relative;  /* ensure text is above the Lottie */
+  z-index: 1;
+}
+.hero-content h1 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: var(--text-dark);
+  font-weight: 700;
+}
+.hero-content p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  max-width: 600px;
+}
+.hero-button {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: #fff;
+  padding: 12px 25px;
+  border-radius: var(--border-radius-sm);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all var(--transition-speed) ease;
+}
+.hero-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+/* Lottie Container in the Hero Background (Animation.json) */
+.three-d-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;       /* behind hero-content */
+  opacity: 0.3;     /* slightly transparent so text is readable */
+  pointer-events: none; /* ignore clicks, so user can click text/links */
+}
+/* Lottie Animation Sizing for Hero Section */
+.lottie-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Maya Page Container */
+.maya-container {
+  position: relative;
+  z-index: 1; /* above the background animation */
+  background-color: rgba(255, 255, 255, 0.432); /* optional semi-transparent bg */
+  border-radius: var(--border-radius-md);
+  padding: 30px;
+  max-width: 1600px;
+  margin: 30px auto; /* center the container */
+  box-shadow: var(--shadow-md);
+  
+}
+
+/* 3) Maya Header with second Lottie (Animation5.json) */
+.maya-header {
+  display: flex;
+  align-items: center;
+  gap:0.2px; /* text on left, animation on right */
+  margin-bottom: 10px;
+}
+
+.maya-header h1 {
+  font-size: 2rem;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.maya-animation-container {
+  width: 150px; /* adjust as needed */
+  height: 150px;
+  pointer-events: none; /* ignore clicks, so user can click text/links */
+}
+
+/* The smaller top-right Lottie animation */
+.maya-animation {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* or cover, etc. */
+}
+
+/* 4) Conversation Styles (already in your code, but repeated here for clarity) */
+.conversation-item {
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f98e; /* or a subtle background */
+  box-shadow: var(--shadow-sm);
+   
+}
+.conversation-item p {
+  margin-bottom: 5px;
+}
+.timestamp {
+  font-size: 0.8rem;
+  color: #888;
+}
+.chatbot-ui {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+#user-query {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid #ccc;
+}
+#ask-maya-btn {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  padding: 0 20px;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+#ask-maya-btn:hover {
+  background-color: var(--primary-dark);
+}
+#chatbot-responses .conversation-item {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+.user-message {
+  background: #E3F2FD; /* or another color for user bubble */
+}
+.maya-message {
+  background: #F1F1F1; /* or another color for AI bubble */
+}
+
+/* Appointments Page Container */
+.appointments-container {
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 1200px;
+}
+.appointment-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  transition: transform var(--transition-speed) ease;
+}
+.appointment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.appointment-date {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: var(--border-radius-sm);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  min-width: 100px;
+}
+.appointment-date .day {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.appointment-date .month {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+.appointment-details {
+  flex: 1;
+}
+.appointment-details h3 {
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+.appointment-actions {
+  display: flex;
+  margin-top: 15px;
+  gap: 10px;
+}
+.appointment-actions button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color var(--transition-speed) ease;
+}
+.reschedule-btn {
+  background-color: #FFC107;
+  color: #333;
+}
+.cancel-btn {
+  background-color: #F44336;
+  color: white;
+}
+
+/* Feedback Page Container */
+.feedback-container {
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 800px;
+  background-color: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--border-radius-sm);
+  font-family: 'Poppins', sans-serif;
+  transition: border-color var(--transition-speed) ease;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+.rating-options {
+  display: flex;
+  gap: 15px;
+}
+.rating-option {
+  flex: 1;
+  text-align: center;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+}
+.rating-option:hover {
+  border-color: var(--primary-color);
+}
+.rating-option.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(76, 175, 80, 0.1);
+}
+.submit-btn {
+  padding: 14px 24px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all var(--transition-speed) ease;
+  align-self: flex-end;
+  margin-top: 20px;
+}
+.submit-btn:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ------------------------------------------------------
+   8) RESPONSIVE DESIGN
+   ------------------------------------------------------ */
+@media (max-width: 992px) {
+  .container {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    padding: 20px;
+  }
+  .hero-section {
+    padding: 60px 30px;
+  }
+  .hero-section h1 {
+    font-size: 2.2rem;
+  }
+}
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 15px;
+  }
+  .logo {
+    margin-bottom: 15px;
+  }
+  nav ul {
+    gap: 15px;
+  }
+  .container {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+  .hero-section {
+    padding: 40px 20px;
+  }
+  .hero-section h1 {
+    font-size: 1.8rem;
+  }
+  .appointment-card {
+    flex-direction: column;
+  }
+  .appointment-date {
+    margin-right: 0;
+    margin-bottom: 15px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .maya-container,
+  .appointments-container,
+  .feedback-container {
+    padding: 20px;
+  }
+  .rating-options {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+@media (max-width: 480px) {
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero-section {
+    padding: 30px 15px;
+  }
+  .hero-section h1 {
+    font-size: 1.5rem;
+  }
+  .appointment-actions {
+    flex-direction: column;
+  }
+}
+
+/* ------------------------------------------------------
+   9) UTILITY CLASSES AND ANIMATIONS
+   ------------------------------------------------------ */
+.hidden {
+  display: none;
+}
+.text-center {
+  text-align: center;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}
+/* Fade-in animation for elements */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+/* Pulse animation for notifications */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.pulse {
+  animation: pulse 2s infinite;
+}
+/* Card flip effect (optional) */
+.card-container {
+  perspective: 1000px;
+}
+.card-flip {
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.card-container:hover .card-flip {
+  transform: rotateY(180deg);
+}
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+.card-back {
+  transform: rotateY(180deg);
+}
+/* Loading spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 20px auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* Example for a large Lottie in three-d-image-container (Hero) */
+.three-d-image-container lottie-player {
+  width: 1350px;
+  height: 740px;
+}
