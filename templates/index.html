@@ -1,61 +1,430 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Asend Health - Login</title>
-
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-
-</head>
-<body>
-  <!-- Login Container -->
-  <div class="login-container">
-    <div class="login-card">
-      <h2>Asend Health</h2>
-      <h4>Empowering Health, Enabling Lives</h4>
-      </br>
-      <p>Please log in to access your dashboard</p>
-      <form id="login-form">
-        <input type="text" id="username" name="username" placeholder="Username" required />
-        <input type="password" id="password" name="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
-      <div id="error-message"></div>
-    </div>
-  </div>
-
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link href="https://gmpg.org/xfn/11" rel="profile" />
+  <title>AsendHealth</title>
+  <!--meta content="max-image-preview:large" name="robots" /-->
+  <link href="//fonts.googleapis.com" rel="dns-prefetch" />
+  <!--link href="https://asendhealth.com/feed/" rel="alternate" title="AsendHealth » Feed" type="application/rss+xml">
+  <link href="https://asendhealth.com/comments/feed/" rel="alternate" title="AsendHealth » Comments Feed"
+    type="application/rss+xml" />
   <script>
-    document.getElementById("login-form").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value; // password is treated as the GUID
-      
-      try {
-        const response = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Login Response:", data);
-          if (data.point_id) {
-            localStorage.setItem("pointId", data.point_id);
+    window._wpemojiSettings = { "baseUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/72x72\/", "ext": ".png", "svgUrl": "https:\/\/s.w.org\/images\/core\/emoji\/15.0.3\/svg\/", "svgExt": ".svg", "source": { "concatemoji": "https:\/\/asendhealth.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=6.7.2" } };
+    /*! This file is auto-generated */
+    !function (i, n) { var o, s, e; function c(e) { try { var t = { supportTests: e, timestamp: (new Date).valueOf() }; sessionStorage.setItem(o, JSON.stringify(t)) } catch (e) { } } function p(e, t, n) { e.clearRect(0, 0, e.canvas.width, e.canvas.height), e.fillText(t, 0, 0); var t = new Uint32Array(e.getImageData(0, 0, e.canvas.width, e.canvas.height).data), r = (e.clearRect(0, 0, e.canvas.width, e.canvas.height), e.fillText(n, 0, 0), new Uint32Array(e.getImageData(0, 0, e.canvas.width, e.canvas.height).data)); return t.every(function (e, t) { return e === r[t] }) } function u(e, t, n) { switch (t) { case "flag": return n(e, "\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f", "\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f") ? !1 : !n(e, "\ud83c\uddfa\ud83c\uddf3", "\ud83c\uddfa\u200b\ud83c\uddf3") && !n(e, "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f", "\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f"); case "emoji": return !n(e, "\ud83d\udc26\u200d\u2b1b", "\ud83d\udc26\u200b\u2b1b") }return !1 } function f(e, t, n) { var r = "undefined" != typeof WorkerGlobalScope && self instanceof WorkerGlobalScope ? new OffscreenCanvas(300, 150) : i.createElement("canvas"), a = r.getContext("2d", { willReadFrequently: !0 }), o = (a.textBaseline = "top", a.font = "600 32px Arial", {}); return e.forEach(function (e) { o[e] = t(a, e, n) }), o } function t(e) { var t = i.createElement("script"); t.src = e, t.defer = !0, i.head.appendChild(t) } "undefined" != typeof Promise && (o = "wpEmojiSettingsSupports", s = ["flag", "emoji"], n.supports = { everything: !0, everythingExceptFlag: !0 }, e = new Promise(function (e) { i.addEventListener("DOMContentLoaded", e, { once: !0 }) }), new Promise(function (t) { var n = function () { try { var e = JSON.parse(sessionStorage.getItem(o)); if ("object" == typeof e && "number" == typeof e.timestamp && (new Date).valueOf() < e.timestamp + 604800 && "object" == typeof e.supportTests) return e.supportTests } catch (e) { } return null }(); if (!n) { if ("undefined" != typeof Worker && "undefined" != typeof OffscreenCanvas && "undefined" != typeof URL && URL.createObjectURL && "undefined" != typeof Blob) try { var e = "postMessage(" + f.toString() + "(" + [JSON.stringify(s), u.toString(), p.toString()].join(",") + "));", r = new Blob([e], { type: "text/javascript" }), a = new Worker(URL.createObjectURL(r), { name: "wpTestEmojiSupports" }); return void (a.onmessage = function (e) { c(n = e.data), a.terminate(), t(n) }) } catch (e) { } c(n = f(s, u, p)) } t(n) }).then(function (e) { for (var t in e) n.supports[t] = e[t], n.supports.everything = n.supports.everything && n.supports[t], "flag" !== t && (n.supports.everythingExceptFlag = n.supports.everythingExceptFlag && n.supports[t]); n.supports.everythingExceptFlag = n.supports.everythingExceptFlag && !n.supports.flag, n.DOMReady = !1, n.readyCallback = function () { n.DOMReady = !0 } }).then(function () { return e }).then(function () { var e; n.supports.everything || (n.readyCallback(), (e = n.source || {}).concatemoji ? t(e.concatemoji) : e.wpemoji && e.twemoji && (t(e.twemoji), t(e.wpemoji))) })) }((window, document), window._wpemojiSettings);
+  </script-->
+  <link href="https://asendhealth.com/wp-content/themes/astra/assets/css/minified/main.min.css?ver=4.9.1"
+    id="astra-theme-css-css" media="all" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=DM+Sans%3A400%2C%2C700%7CForum%3A400&amp;display=fallback&amp;ver=4.9.1"
+    id="astra-google-fonts-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2"
+    id="wp-block-library-css" media="all" rel="stylesheet" />
+  <!--link href="https://asendhealth.com/wp-content/plugins/latepoint/public/stylesheets/front.css?ver=5.1.92"
+    id="latepoint-main-front-css" media="all" rel="stylesheet" /-->
+  <link href="https://asendhealth.com/wp-content/plugins/suretriggers/assets/css/st-trigger-button.css?ver=1.0.83"
+    id="st-trigger-button-style-css" media="all" rel="stylesheet" />
+  <!--[if IE]>
+<script src="https://asendhealth.com/wp-content/themes/astra/assets/js/minified/flexibility.min.js?ver=4.9.1" id="astra-flexibility-js"></script>
+<script id="astra-flexibility-js-after">
+flexibility(document.documentElement);
+</script>
+<![endif]-->
+  <script id="jquery-core-js" src="https://asendhealth.com/wp-includes/js/jquery/jquery.min.js?ver=3.7.1"></script>
+  <script id="jquery-migrate-js"
+    src="https://asendhealth.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1"></script>
+  <!--script id="latepoint-vendor-front-js"
+    src="https://asendhealth.com/wp-content/plugins/latepoint/public/javascripts/vendor-front.js?ver=5.1.92"></script-->
+  <script id="wp-hooks-js"
+    src="https://asendhealth.com/wp-includes/js/dist/hooks.min.js?ver=4d63a3d491d11ffd8ac6"></script>
+  <script id="wp-i18n-js"
+    src="https://asendhealth.com/wp-includes/js/dist/i18n.min.js?ver=5e580eb46a90c2b997e6"></script>
+  <script id="wp-i18n-js-after">
+    wp.i18n.setLocaleData({ 'text direction\u0004ltr': ['ltr'] });
+  </script>
+  <!--script id="latepoint-main-front-js-extra">
+    var latepoint_helper = { "route_action": "latepoint_route_call", "response_status": { "success": "success", "error": "error" }, "ajaxurl": "https:\/\/asendhealth.com\/wp-admin\/admin-ajax.php", "time_pick_style": "timebox", "string_today": "Today", "reload_booking_form_summary_route": "steps__reload_booking_form_summary_panel", "time_system": "12", "msg_not_available": "Not Available", "booking_button_route": "steps__start", "remove_cart_item_route": "carts__remove_item_from_cart", "show_booking_end_time": "no", "customer_dashboard_url": "https:\/\/asendhealth.com\/customer-cabinet", "demo_mode": "", "cancel_booking_prompt": "Are you sure you want to cancel this appointment?", "single_space_message": "Space Available", "many_spaces_message": "Spaces Available", "body_font_family": "\"latepoint\", -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif ", "headings_font_family": "\"latepoint\", -apple-system, system-ui, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif ", "currency_symbol_before": "$", "currency_symbol_after": "", "thousand_separator": ",", "decimal_separator": ".", "number_of_decimals": "2", "included_phone_countries": "[]", "default_phone_country": "us", "is_timezone_selected": "", "start_from_order_intent_route": "steps__start_from_order_intent", "start_from_order_intent_key": "", "is_enabled_show_dial_code_with_flag": "1", "mask_phone_number_fields": "1", "msg_validation_presence": "can not be blank", "msg_validation_presence_checkbox": "has to be checked", "msg_validation_invalid": "is invalid", "msg_minutes_suffix": " minutes", "is_stripe_connect_enabled": "", "check_order_intent_bookable_route": "steps__check_order_intent_bookable", "generate_timeslots_for_day_route": "steps__generate_timeslots_for_day", "payment_environment": "live", "style_border_radius": "flat", "datepicker_timeslot_selected_label": "Selected", "invoices_payment_form_route": "invoices__payment_form", "invoices_summary_before_payment_route": "invoices__summary_before_payment", "reset_presets_when_adding_new_item": "", "start_from_transaction_access_key": "", "stripe_connect_route_create_payment_intent": "stripe_connect__create_payment_intent", "stripe_connect_route_create_payment_intent_for_transaction_intent": "stripe_connect__create_payment_intent_for_transaction" };
+  </script>
+  <script id="latepoint-main-front-js"
+    src="https://asendhealth.com/wp-content/plugins/latepoint/public/javascripts/front.js?ver=5.1.92"></script-->
+  <link href="https://asendhealth.com/wp-json/" rel="https://api.w.org/" />
+  <link href="https://asendhealth.com/wp-json/wp/v2/pages/2030" rel="alternate" title="JSON" type="application/json" />
+  <link href="https://asendhealth.com/xmlrpc.php?rsd" rel="EditURI" title="RSD" type="application/rsd+xml" />
+  <!--meta content="WordPress 6.7.2" name="generator" />
+  <link href="https://asendhealth.com/login/" rel="canonical" />
+  <link href="https://asendhealth.com/?p=2030" rel="shortlink" />
+  <link href="https://asendhealth.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fasendhealth.com%2Flogin%2F"
+    rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" />
+  <link
+    href="https://asendhealth.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fasendhealth.com%2Flogin%2F&amp;format=xml"
+    rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" />
+  <meta
+    content="Elementor 3.28.4; features: e_font_icon_svg, additional_custom_breakpoints, e_local_google_fonts, e_element_cache; settings: css_print_method-internal, google_font-enabled, font_display-swap"
+    name="generator">
+  </meta>
+  </link-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='astra-theme.css') }}" />
+</head>
+
+<body
+  class="page-template-default page page-id-2030 wp-custom-logo latepoint ast-desktop ast-separate-container ast-two-container ast-no-sidebar astra-4.9.1 ast-single-post ast-replace-site-logo-transparent ast-inherit-site-logo-transparent ast-hfb-header ast-normal-title-enabled elementor-default elementor-kit-2003"
+  itemscope="itemscope" itemtype="https://schema.org/WebPage">
+  <a class="skip-link screen-reader-text" href="#content" title="Skip to content">
+    Skip to content</a>
+  <div class="hfeed site" id="page">
+    <header
+      class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+      id="masthead" itemid="#masthead" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+      <div data-toggle-type="dropdown" id="ast-desktop-header">
+        <div class="ast-main-header-wrap main-header-bar-wrap">
+          <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+            data-section="section-primary-header-builder">
+            <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+              data-section="section-primary-header-builder">
+              <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+                <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                  <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                    <div class="site-branding ast-site-identity" itemscope="itemscope"
+                      itemtype="https://schema.org/Organization">
+                      <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                          rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                            height="203" sizes="(max-width: 424px) 100vw, 424px"
+                            src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                            srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                            width="424" /></a></span>
+                    </div>
+                    <!-- .site-branding -->
+                  </div>
+                </div>
+                <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                  <div
+                    class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                    data-section="section-hb-menu-1">
+                    <div class="ast-main-header-bar-alignment">
+                      <div class="main-header-bar-navigation">
+                        <nav aria-label="Site Navigation: Main Menu"
+                          class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                          id="primary-site-navigation-desktop" itemscope="itemscope"
+                          itemtype="https://schema.org/SiteNavigationElement">
+                          <div class="main-navigation ast-inline-flex">
+                            <ul
+                              class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                              id="ast-hf-menu-1">
+                              <li
+                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169"
+                                id="menu-item-1169"><a class="menu-link" href="https://asendhealth.com/">Home</a></li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"
+                                id="menu-item-1170"><a class="menu-link" href="https://asendhealth.com/about/">About</a>
+                              </li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"
+                                id="menu-item-1172"><a class="menu-link"
+                                  href="https://asendhealth.com/services/">Services</a></li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"
+                                id="menu-item-1171"><a class="menu-link"
+                                  href="https://asendhealth.com/contact/">Contact</a></li>
+                            </ul>
+                          </div>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                  <!--div class="ast-builder-layout-element ast-flex site-header-focus-item ast-header-button-1"
+                    data-section="section-hb-button-1">
+                    <div class="ast-builder-button-wrap ast-builder-button-size-"><a class="ast-custom-button-link"
+                        href="tel:202-555-0188" target="_self">
+                        <div class="ast-custom-button">202-555-0188</div>
+                      </a><a class="menu-link" href="tel:202-555-0188" target="_self">202-555-0188</a></div>
+                  </div-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- Main Header Bar Wrap -->
+      <div class="ast-mobile-header-wrap" data-type="dropdown" id="ast-mobile-header">
+        <div class="ast-main-header-wrap main-header-bar-wrap">
+          <div
+            class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item ast-builder-grid-row-layout-default ast-builder-grid-row-tablet-layout-default ast-builder-grid-row-mobile-layout-default"
+            data-section="section-primary-header-builder">
+            <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+              <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                  <div class="site-branding ast-site-identity" itemscope="itemscope"
+                    itemtype="https://schema.org/Organization">
+                    <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                        rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                          height="203" sizes="(max-width: 424px) 100vw, 424px"
+                          src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                          srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                          width="424" /></a></span>
+                  </div>
+                  <!-- .site-branding -->
+                </div>
+              </div>
+              <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                  data-section="section-header-mobile-trigger">
+                  <div class="ast-button-wrap">
+                    <button aria-expanded="false"
+                      class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-fill" type="button">
+                      <span class="screen-reader-text">Main Menu</span>
+                      <span class="mobile-menu-toggle-icon">
+                        <span aria-hidden="true" class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                            class="ast-mobile-svg ast-menu2-svg" fill="currentColor" height="28" version="1.1"
+                            viewbox="0 0 24 28" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z">
+                            </path>
+                          </svg></span><span aria-hidden="true"
+                          class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                            class="ast-mobile-svg ast-close-svg" fill="currentColor" height="24" version="1.1"
+                            viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                            </path>
+                          </svg></span> </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ast-mobile-header-content content-align-flex-start">
+          <div
+            class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+            data-section="section-hb-menu-1">
+            <div class="ast-main-header-bar-alignment">
+              <div class="main-header-bar-navigation">
+                <nav aria-label="Site Navigation: Main Menu"
+                  class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                  id="primary-site-navigation-mobile" itemscope="itemscope"
+                  itemtype="https://schema.org/SiteNavigationElement">
+                  <div class="main-navigation ast-inline-flex">
+                    <ul
+                      class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                      id="ast-hf-menu-1">
+                      <li
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                        <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                      </li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"><a
+                          class="menu-link" href="https://asendhealth.com/about/">About</a></li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"><a
+                          class="menu-link" href="https://asendhealth.com/services/">Services</a></li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"><a
+                          class="menu-link" href="https://asendhealth.com/contact/">Contact</a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header><!-- #masthead -->
+    <div class="site-content" id="content">
+      <div class="ast-container">
+        <div class="content-area primary" id="primary">
+          <main class="site-main" id="main">
+            <article class="post-2030 page type-page status-publish ast-article-single" id="post-2030"
+              itemscope="itemscope" itemtype="https://schema.org/CreativeWork">
+              <header class="entry-header">
+                <h1 class="entry-title" itemprop="headline">Login</h1>
+              </header> <!-- .entry-header -->
+              <div class="entry-content clear" data-ast-blocks-layout="true" itemprop="text">
+                <!DOCTYPE html>
+
+                <html lang="en">
+
+                <head>
+                  <meta charset="utf-8" />
+                  <meta content="width=device-width, initial-scale=1" name="viewport">
+                  </meta>
+                </head>
+
+                <body>
+                  <!-- Login Container -->
+                  <div class="login-container">
+                    <div class="login-card">
+                      <p>Please log in to access your services</p>
+                      </br>
+                      <form id="login-form">
+                        <!--label for="username">Username</label-->
+                        <input id="username" name="username" required="True" style="display:block; margin-bottom:10px;" type="text" placeholder="Username"/>
+                        <!--label for="password">Password</label-->
+                        <input id="password" name="password" required="True" style="display:block; margin-bottom:10px;" type="password" placeholder="Password"/>
+                        <button style="display:block; margin-bottom:10px;" type="submit">Login</button>
+                        <a href="/forgot-password" style="display:block; margin-bottom:5px;">Trouble logging in?</a>
+                        <a href="/register" style="display:block;">Need an account?</a>
+                      </form>
+                      <div id="error-message"></div>
+                    </div>
+                  </div>
+                  <script>
+                    document.getElementById("login-form").addEventListener("submit", async function (e) {
+                      e.preventDefault();
+                      const username = document.getElementById("username").value;
+                      const password = document.getElementById("password").value; // password is treated as the GUID
+
+                      try {
+                        const response = await fetch("/api/login", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ username, password })
+                        });
+
+                        if (response.ok) {
+                          const data = await response.json();
+                          console.log("Login Response:", data);
+                          if (data.point_id) {
+                            localStorage.setItem("pointId", data.point_id);
+                          }
+                          localStorage.setItem("patientGuid", data.guid || password);
+                          window.location.href = "/areya";
+                        } else {
+                          const error = await response.json();
+                          document.getElementById("error-message").innerText = error.message || "Login failed";
+                        }
+                      } catch (err) {
+                        console.error(err);
+                        document.getElementById("error-message").innerText = "Error during login.";
+                      }
+                    });
+                  </script>
+                </body>
+
+                </html>
+                <p></p>
+              </div><!-- .entry-content .clear -->
+            </article><!-- #post-## -->
+          </main><!-- #main -->
+        </div><!-- #primary -->
+      </div> <!-- ast-container -->
+    </div><!-- #content -->
+    <footer class="site-footer" id="colophon" itemid="#colophon" itemscope="itemscope"
+      itemtype="https://schema.org/WPFooter">
+      <div
+        class="site-primary-footer-wrap ast-builder-grid-row-container site-footer-focus-item ast-builder-grid-row-3-equal ast-builder-grid-row-tablet-full ast-builder-grid-row-mobile-full ast-footer-row-stack ast-footer-row-tablet-stack ast-footer-row-mobile-stack"
+        data-section="section-primary-footer-builder">
+        <div class="ast-builder-grid-row-container-inner">
+          <div class="ast-builder-footer-grid-columns site-primary-footer-inner-wrap ast-builder-grid-row">
+            <div class="site-footer-primary-section-1 site-footer-section site-footer-section-1">
+              <div class="footer-widget-area widget-area site-footer-focus-item" data-section="section-footer-menu">
+                <div class="footer-bar-navigation">
+                  <nav aria-label="Site Navigation: Main Menu"
+                    class="site-navigation ast-flex-grow-1 navigation-accessibility footer-navigation"
+                    id="footer-site-navigation" itemscope="itemscope"
+                    itemtype="https://schema.org/SiteNavigationElement">
+                    <div class="footer-nav-wrap">
+                      <ul
+                        class="ast-nav-menu ast-flex astra-footer-horizontal-menu astra-footer-tablet-horizontal-menu astra-footer-mobile-vertical-menu"
+                        id="astra-footer-menu">
+                        <li
+                          class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                          <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                        </li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"><a
+                            class="menu-link" href="https://asendhealth.com/about/">About</a></li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"><a
+                            class="menu-link" href="https://asendhealth.com/services/">Services</a></li>
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"><a
+                            class="menu-link" href="https://asendhealth.com/contact/">Contact</a></li>
+                      </ul>
+                    </div>
+                  </nav>
+                </div>
+              </div>
+            </div>
+            <div class="site-footer-primary-section-2 site-footer-section site-footer-section-2">
+              <div class="footer-widget-area widget-area site-footer-focus-item ast-footer-html-1"
+                data-section="section-fb-html-1">
+                <div class="ast-header-html inner-link-style-">
+                  <div class="ast-builder-html-element">
+                    <!--p><img alt="" class="alignnone wp-image-74 size-thumbnail" height="50"
+                        src="https://websitedemos.net/love-nature-02/wp-content/uploads/sites/988/2021/11/logo-green.svg"
+                        width="60" /></p-->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="site-footer-primary-section-3 site-footer-section site-footer-section-3">
+              <div class="ast-builder-layout-element ast-flex site-footer-focus-item ast-footer-copyright"
+                data-section="section-footer-builder">
+                <div class="ast-footer-copyright">
+                  <p>AsendHealth, driving better outcomes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer><!-- #colophon -->
+  </div><!-- #page -->
+  <svg focusable="false" height="0" role="none"
+    style="visibility: hidden; position: absolute; left: -9999px; overflow: hidden;" viewbox="0 0 0 0" width="0"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="ast-img-color-filter-2">
+        <fecolormatrix color-interpolation-filters="sRGB" type="matrix"
+          values=" .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 .299 .587 .114 0 0 "></fecolormatrix>
+        <fecomponenttransfer color-interpolation-filters="sRGB">
+          <fefuncr tablevalues="1 1" type="table"></fefuncr>
+          <fefuncg tablevalues="1 1" type="table"></fefuncg>
+          <fefuncb tablevalues="1 1" type="table"></fefuncb>
+          <fefunca tablevalues="1 1" type="table"></fefunca>
+        </fecomponenttransfer>
+        <fecomposite in2="SourceGraphic" operator="in"></fecomposite>
+      </filter>
+    </defs>
+  </svg>
+  <script>
+    const lazyloadRunObserver = () => {
+      const lazyloadBackgrounds = document.querySelectorAll(`.e-con.e-parent:not(.e-lazyloaded)`);
+      const lazyloadBackgroundObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            let lazyloadBackground = entry.target;
+            if (lazyloadBackground) {
+              lazyloadBackground.classList.add('e-lazyloaded');
+            }
+            lazyloadBackgroundObserver.unobserve(entry.target);
           }
-          localStorage.setItem("patientGuid", data.guid || password);
-          window.location.href = "/maya";
-        } else {
-          const error = await response.json();
-          document.getElementById("error-message").innerText = error.message || "Login failed";
-        }
-      } catch (err) {
-        console.error(err);
-        document.getElementById("error-message").innerText = "Error during login.";
-      }
+        });
+      }, { rootMargin: '200px 0px 200px 0px' });
+      lazyloadBackgrounds.forEach((lazyloadBackground) => {
+        lazyloadBackgroundObserver.observe(lazyloadBackground);
+      });
+    };
+    const events = [
+      'DOMContentLoaded',
+      'elementor/lazyload/observe',
+    ];
+    events.forEach((event) => {
+      document.addEventListener(event, lazyloadRunObserver);
     });
   </script>
+  <script id="astra-theme-js-js-extra">
+    var astra = { "break_point": "921", "isRtl": "", "is_scroll_to_id": "", "is_scroll_to_top": "", "is_header_footer_builder_active": "1", "responsive_cart_click": "flyout", "palette_key": "" };
+  </script>
+  <script id="astra-theme-js-js"
+    src="https://asendhealth.com/wp-content/themes/astra/assets/js/minified/frontend.min.js?ver=4.9.1"></script>
+  <script id="st-trigger-button-script-js-extra">
+    var st_ajax_object = { "ajax_url": "https:\/\/asendhealth.com\/wp-admin\/admin-ajax.php" };
+  </script>
+  <script id="st-trigger-button-script-js"
+    src="https://asendhealth.com/wp-content/plugins/suretriggers/assets/js/st-trigger-button.js?ver=1.0.83"></script>
+  <script id="wp-dom-ready-js"
+    src="https://asendhealth.com/wp-includes/js/dist/dom-ready.min.js?ver=f77871ff7694fffea381"></script>
+  <script id="starter-templates-zip-preview-js-extra">
+    var starter_templates_zip_preview = { "AstColorPaletteVarPrefix": "--ast-global-color-", "AstEleColorPaletteVarPrefix": ["ast-global-color-0", "ast-global-color-1", "ast-global-color-2", "ast-global-color-3", "ast-global-color-4", "ast-global-color-5", "ast-global-color-6", "ast-global-color-7", "ast-global-color-8"] };
+  </script>
+  <script id="starter-templates-zip-preview-js"
+    src="https://asendhealth.com/wp-content/plugins/astra-sites/inc/lib/onboarding/assets/dist/template-preview/main.js?ver=06758d4d807d9d22c6ea"></script>
+  <script>
+    /(trident|msie)/i.test(navigator.userAgent) && document.getElementById && window.addEventListener && window.addEventListener("hashchange", function () { var t, e = location.hash.substring(1); /^[A-z0-9_-]+$/.test(e) && (t = document.getElementById(e)) && (/^(?:a|select|input|button|textarea)$/i.test(t.tagName) || (t.tabIndex = -1), t.focus()) }, !1);
+  </script>
 </body>
+
 </html>

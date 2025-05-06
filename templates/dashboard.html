@@ -1,176 +1,462 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - Asend Health</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <title>Dashboard - AsendHealth</title>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='astra-theme.css') }}" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://gmpg.org/xfn/11" rel="profile" />
+  <!-- AsendHealth CSS -->
+  <link href="https://asendhealth.com/wp-content/themes/astra/assets/css/minified/main.min.css?ver=4.9.1"
+    id="astra-theme-css-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2"
+    id="wp-block-library-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-content/plugins/suretriggers/assets/css/st-trigger-button.css?ver=1.0.83"
+    id="st-trigger-button-style-css" media="all" rel="stylesheet" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Add debugging tools -->
+  <script src="{{ url_for('static', filename='js/maya_chat.js') }}"></script>
+
 </head>
 <body>
-  
-  <!-- Dashboard Content -->
-  <header>
-    <nav>
-      <ul>
-        <li><a href="/maya">Areya</a></li>
-        <li><a href="/dashboard" class="active">Dashboard</a></li>
-        <li><a href="/appointments">Appointments</a></li>
-        <li><a href="#" id="logoutBtn">Logout</a></li>
-      </ul>
-    </nav>
+  <header
+    class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+    id="masthead" itemid="#masthead" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+    <div data-toggle-type="dropdown" id="ast-desktop-header">
+      <div class="ast-main-header-wrap main-header-bar-wrap">
+        <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+          data-section="section-primary-header-builder">
+          <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+            data-section="section-primary-header-builder">
+            <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+              <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                  <div class="site-branding ast-site-identity" itemscope="itemscope"
+                    itemtype="https://schema.org/Organization">
+                    <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                        rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                          height="203" sizes="(max-width: 424px) 100vw, 424px"
+                          src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                          srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                          width="424" /></a></span>
+                  </div>
+                  <!-- .site-branding -->
+                </div>
+              </div>
+              <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                <div
+                  class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                  data-section="section-hb-menu-1">
+                  <div class="ast-main-header-bar-alignment">
+                    <div class="main-header-bar-navigation">
+                      <nav aria-label="Site Navigation: Main Menu"
+                        class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                        id="primary-site-navigation-desktop" itemscope="itemscope"
+                        itemtype="https://schema.org/SiteNavigationElement">
+                        <div class="main-navigation ast-inline-flex">
+                          <ul
+                            class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                            id="ast-hf-menu-1">
+                            <li
+                              class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169"
+                              id="menu-item-1169"><a class="menu-link" href="https://asendhealth.com/">Home</a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"
+                              id="menu-item-1170"><a class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a>
+                            </li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"
+                              id="menu-item-1172"><a class="menu-link"
+                                href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                            <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"
+                              id="menu-item-1171"><a class="menu-link"
+                                href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                          </ul>
+                        </div>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+                <!--div class="ast-builder-layout-element ast-flex site-header-focus-item ast-header-button-1"
+                data-section="section-hb-button-1">
+                <div class="ast-builder-button-wrap ast-builder-button-size-"><a class="ast-custom-button-link"
+                    href="tel:202-555-0188" target="_self">
+                    <div class="ast-custom-button">202-555-0188</div>
+                  </a><a class="menu-link" href="tel:202-555-0188" target="_self">202-555-0188</a></div>
+              </div-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- Main Header Bar Wrap -->
+    <div class="ast-mobile-header-wrap" data-type="dropdown" id="ast-mobile-header">
+      <div class="ast-main-header-wrap main-header-bar-wrap">
+        <div
+          class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item ast-builder-grid-row-layout-default ast-builder-grid-row-tablet-layout-default ast-builder-grid-row-mobile-layout-default"
+          data-section="section-primary-header-builder">
+          <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+            <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+              <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                <div class="site-branding ast-site-identity" itemscope="itemscope"
+                  itemtype="https://schema.org/Organization">
+                  <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                      rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                        height="203" sizes="(max-width: 424px) 100vw, 424px"
+                        src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                        srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                        width="424" /></a></span>
+                </div>
+                <!-- .site-branding -->
+              </div>
+            </div>
+            <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+              <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                data-section="section-header-mobile-trigger">
+                <div class="ast-button-wrap">
+                  <button aria-expanded="false" class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-fill"
+                    type="button">
+                    <span class="screen-reader-text">Main Menu</span>
+                    <span class="mobile-menu-toggle-icon">
+                      <span aria-hidden="true" class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                          class="ast-mobile-svg ast-menu2-svg" fill="currentColor" height="28" version="1.1"
+                          viewbox="0 0 24 28" width="24" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z">
+                          </path>
+                        </svg></span><span aria-hidden="true" class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                          class="ast-mobile-svg ast-close-svg" fill="currentColor" height="24" version="1.1"
+                          viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                          </path>
+                        </svg></span> </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ast-mobile-header-content content-align-flex-start">
+        <div
+          class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+          data-section="section-hb-menu-1">
+          <div class="ast-main-header-bar-alignment">
+            <div class="main-header-bar-navigation">
+              <nav aria-label="Site Navigation: Main Menu"
+                class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                id="primary-site-navigation-mobile" itemscope="itemscope"
+                itemtype="https://schema.org/SiteNavigationElement">
+                <div class="main-navigation ast-inline-flex">
+                  <ul class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                    id="ast-hf-menu-1">
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                      <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                    </li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"><a
+                        class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"><a
+                        class="menu-link" href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                    <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"><a
+                        class="menu-link" href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                  </ul>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </header>
 
-  <div class="container">
-    <div class="section" id="personal-info-section">
-      <h2>Personal Information</h2>
-      <div id="patient-info">
-        <!-- Patient Info will be populated here -->
+  <div class="dashboard-container">
+    <!-- Tree Navigation -->
+    <div class="tree-nav">
+      <div class="tree-node active" data-section="patient-info">
+        <i class="fas fa-user"></i>
+        Patient Information
+      </div>
+      <div class="tree-node" data-section="medical-conditions">
+        <i class="fas fa-notes-medical"></i>
+        Medical Conditions
+      </div>
+      <div class="tree-node" data-section="medications">
+        <i class="fas fa-pills"></i>
+        Medications
+      </div>
+      <div class="tree-node" data-section="activity-log">
+        <i class="fas fa-clipboard-list"></i>
+        Activity Log
+      </div>
+      <div class="tree-node" data-section="health-metrics">
+        <i class="fas fa-heartbeat"></i>
+        Health Metrics
+      </div>
+      <div class="tree-node" data-section="alerts">
+        <i class="fas fa-bell"></i>
+        Alerts
       </div>
     </div>
-    <div class="section" id="medical-conditions-section">
-      <h2>Medical Conditions</h2>
-      <div id="medical-history">
-        <!-- Medical Conditions will be populated here -->
+
+    <!-- Content Area -->
+    <div class="content-area">
+      <div class="section active" id="patient-info">
+        <div class="section-header">
+          <h2><i class="fas fa-user"></i> Patient Information</h2>
+        </div>
+        <div class="section-content" id="patient-info-content">
+          <!-- Patient Info will be populated here -->
+        </div>
       </div>
-    </div>
-    <div class="section" id="medications-section">
-      <h2>Medications</h2>
-      <div id="medications">
-        <!-- Medications will be populated here -->
+
+      <div class="section" id="medical-conditions">
+        <div class="section-header">
+          <h2><i class="fas fa-notes-medical"></i> Medical Conditions</h2>
+        </div>
+        <div class="section-content" id="medical-conditions-content">
+          <!-- Medical Conditions will be populated here -->
+        </div>
       </div>
-    </div>
-    <div class="section" id="activity-log-section">
-      <h2>Activity Log</h2>
-      <div id="activity-log">
-        <!-- Activity Log will be populated here -->
+
+      <div class="section" id="medications">
+        <div class="section-header">
+          <h2><i class="fas fa-pills"></i> Medications</h2>
+        </div>
+        <div class="section-content" id="medications-content">
+          <!-- Medications will be populated here -->
+        </div>
       </div>
-    </div>
-    <div class="section" id="health-metrics-section">
-      <h2>Health Metrics</h2>
-      <div id="health-metrics">
-        <!-- Health Metrics Content -->
+
+      <div class="section" id="activity-log">
+        <div class="section-header">
+          <h2><i class="fas fa-clipboard-list"></i> Activity Log</h2>
+        </div>
+        <div class="section-content" id="activity-log-content">
+          <!-- Activity Log will be populated here -->
+        </div>
       </div>
-    </div>
-    <div class="section" id="alerts-section">
-      <h2>Alerts</h2>
-      <div id="alerts">
-        <!-- Alerts will be populated here -->
+
+      <div class="section" id="health-metrics">
+        <div class="section-header">
+          <h2><i class="fas fa-heartbeat"></i> Health Metrics</h2>
+        </div>
+        <div class="section-content" id="health-metrics-content">
+          <!-- Health Metrics will be populated here -->
+        </div>
+      </div>
+
+      <div class="section" id="alerts">
+        <div class="section-header">
+          <h2><i class="fas fa-bell"></i> Alerts</h2>
+        </div>
+        <div class="section-content" id="alerts-content">
+          <!-- Alerts will be populated here -->
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async function() {
+    document.addEventListener("DOMContentLoaded", async function () {
+      // Tree node navigation
+      const treeNodes = document.querySelectorAll('.tree-node');
+      const sections = document.querySelectorAll('.section');
+
+      treeNodes.forEach(node => {
+        node.addEventListener('click', () => {
+          // Remove active class from all nodes and sections
+          treeNodes.forEach(n => n.classList.remove('active'));
+          sections.forEach(s => s.classList.remove('active'));
+
+          // Add active class to clicked node
+          node.classList.add('active');
+
+          // Show corresponding section
+          const sectionId = node.getAttribute('data-section');
+          document.getElementById(sectionId).classList.add('active');
+        });
+      });
+
       // Retrieve the pointId from localStorage
       const pointId = localStorage.getItem("pointId");
       console.log("Point ID from localStorage:", pointId);
-      
+
       if (!pointId) {
         console.error("Point ID not found in localStorage");
         return;
       }
-  
+
       try {
         const response = await fetch("/api/patient-records", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ point_id: pointId })
         });
-  
+
         console.log("API Response Status:", response.status);
-  
+
         if (response.ok) {
           const patientData = await response.json();
           console.log("Patient Data received:", patientData);
-  
+
           if (patientData) {
-            const payload = patientData;
-  
-            // Populate Personal Information
-            const patientInfoElement = document.getElementById("patient-info");
-            if (patientInfoElement) {
-              patientInfoElement.innerHTML = `
-                <p><strong>GUID:</strong> ${payload.guid}</p>
-                <p><strong>Name:</strong> ${payload.name}</p>
-                <p><strong>Age:</strong> ${payload.age}</p>
-                <p><strong>Gender:</strong> ${payload.gender}</p>
-                <p><strong>Location:</strong> ${payload.location}</p>
-                <p><strong>Conditions:</strong> ${payload.conditions.join(", ")}</p>
-              `;
-            } else {
-              console.error("Patient Info Element not found");
-            }
-  
-            // Populate Medical Conditions
-            const medicalHistoryElement = document.getElementById("medical-history");
-            if (medicalHistoryElement) {
-              const assessment = payload.assessment.map(assessment => `
-                <div>
-                  <p><strong>Timestamp:</strong> ${new Date(assessment.timestamp).toLocaleString()}</p>
-                  <p><strong>Observation:</strong> ${assessment.observation}</p>
-                  <p><strong>Recommendation:</strong> ${assessment.recommendation}</p>
-                </div>
-              `).join("");
-              medicalHistoryElement.innerHTML = assessment;
-            } else {
-              console.error("Medical History Element not found");
-            }
-  
-            // Populate Medications
-            const medicationsElement = document.getElementById("medications");
-            if (medicationsElement) {
-              const medications = payload.medications.map(med => `
-                <div>
-                  <p><strong>Name:</strong> ${med.name}</p>
-                  <p><strong>Dosage:</strong> ${med.dosage}</p>
-                  <p><strong>Schedule:</strong> ${med.schedule}</p>
-                </div>
-              `).join("");
-              medicationsElement.innerHTML = medications;
-            } else {
-              console.error("Medications Element not found");
-            }
-  
-            // Populate Activity Log
-            const activityLogElement = document.getElementById("activity-log");
-            if (activityLogElement) {
-              const activities = payload.activity_log.map(activity => `
-                <div>
-                  <p><strong>Date:</strong> ${activity.date}</p>
-                  <p><strong>Activity:</strong> ${activity.activity}</p>
-                  <p><strong>Duration:</strong> ${activity.duration}</p>
-                </div>
-              `).join("");
-              activityLogElement.innerHTML = activities;
-            } else {
-              console.error("Activity Log Element not found");
-            }
-  
-            // Populate Alerts
-            const alertsElement = document.getElementById("alerts");
-            if (alertsElement) {
-              const alerts = payload.alerts.map(alert => `
-                <div>
-                  <p><strong>Timestamp:</strong> ${new Date(alert.timestamp).toLocaleString()}</p>
-                  <p><strong>Message:</strong> ${alert.message}</p>
-                </div>
-              `).join("");
-              alertsElement.innerHTML = alerts;
-            } else {
-              console.error("Alerts Element not found");
-            }
-          } else {
-            console.error("Patient data is missing or invalid");
+            // Populate each section with the corresponding data
+            populatePatientInfo(patientData);
+            populateMedicalConditions(patientData);
+            populateMedications(patientData);
+            populateActivityLog(patientData);
+            populateHealthMetrics(patientData);
+            populateAlerts(patientData);
           }
-        } else {
-          console.error("Failed to fetch patient data. Status:", response.status);
         }
       } catch (error) {
         console.error("Error fetching patient data:", error);
       }
     });
-  
-    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+
+    function populatePatientInfo(data) {
+      const container = document.getElementById('patient-info-content');
+      if (!container) return;
+
+      container.innerHTML = `
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Name:</label>
+            <span>${data.name || 'N/A'}</span>
+          </div>
+          <div class="info-item">
+            <label>Date of Birth:</label>
+            <span>${data.dob || 'N/A'}</span>
+          </div>
+          <div class="info-item">
+            <label>Gender:</label>
+            <span>${data.gender || 'N/A'}</span>
+          </div>
+          <div class="info-item">
+            <label>Contact:</label>
+            <span>${data.contact || 'N/A'}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function populateMedicalConditions(data) {
+      const container = document.getElementById('medical-conditions-content');
+      if (!container) return;
+
+      const conditions = data.medical_conditions || [];
+      container.innerHTML = `
+        <div class="conditions-list">
+          ${conditions.map(condition => `
+            <div class="condition-item">
+              <h3>${condition.name}</h3>
+              <p>${condition.description || 'No description available'}</p>
+              <div class="condition-meta">
+                <span>Diagnosed: ${condition.diagnosed_date || 'N/A'}</span>
+                <span>Status: ${condition.status || 'Active'}</span>
+              </div>
+            </div>
+          `).join('') || '<p>No medical conditions recorded</p>'}
+        </div>
+      `;
+    }
+
+    function populateMedications(data) {
+      const container = document.getElementById('medications-content');
+      if (!container) return;
+
+      const medications = data.medications || [];
+      container.innerHTML = `
+        <div class="medications-list">
+          ${medications.map(med => `
+            <div class="medication-item">
+              <h3>${med.name}</h3>
+              <p>Dosage: ${med.dosage || 'N/A'}</p>
+              <p>Frequency: ${med.frequency || 'N/A'}</p>
+              <p>Prescribed by: ${med.prescribed_by || 'N/A'}</p>
+            </div>
+          `).join('') || '<p>No medications recorded</p>'}
+        </div>
+      `;
+    }
+
+    function populateActivityLog(data) {
+      const container = document.getElementById('activity-log-content');
+      if (!container) return;
+
+      const activities = data.activity_log || [];
+      container.innerHTML = `
+        <div class="activity-timeline">
+          ${activities.map(activity => `
+            <div class="activity-item">
+              <div class="activity-time">${activity.timestamp || 'N/A'}</div>
+              <div class="activity-content">
+                <h4>${activity.type || 'Activity'}</h4>
+                <p>${activity.description || 'No description available'}</p>
+              </div>
+            </div>
+          `).join('') || '<p>No activities recorded</p>'}
+        </div>
+      `;
+    }
+
+    function populateHealthMetrics(data) {
+      const container = document.getElementById('health-metrics-content');
+      if (!container) return;
+
+      const metrics = data.health_metrics || {};
+      container.innerHTML = `
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <h3>Blood Pressure</h3>
+            <p>${metrics.blood_pressure || 'N/A'}</p>
+          </div>
+          <div class="metric-item">
+            <h3>Heart Rate</h3>
+            <p>${metrics.heart_rate || 'N/A'} bpm</p>
+          </div>
+          <div class="metric-item">
+            <h3>Temperature</h3>
+            <p>${metrics.temperature || 'N/A'}°F</p>
+          </div>
+          <div class="metric-item">
+            <h3>Weight</h3>
+            <p>${metrics.weight || 'N/A'} kg</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function populateAlerts(data) {
+      const container = document.getElementById('alerts-content');
+      if (!container) return;
+
+      const alerts = data.alerts || [];
+      container.innerHTML = `
+        <div class="alerts-list">
+          ${alerts.map(alert => `
+            <div class="alert-item ${alert.severity || 'info'}">
+              <div class="alert-header">
+                <h3>${alert.title || 'Alert'}</h3>
+                <span class="alert-time">${alert.timestamp || 'N/A'}</span>
+              </div>
+              <p>${alert.message || 'No message available'}</p>
+            </div>
+          `).join('') || '<p>No alerts at this time</p>'}
+        </div>
+      `;
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", function (e) {
       e.preventDefault();
       localStorage.removeItem("pointId");
       localStorage.removeItem("patientGuid");
@@ -178,4 +464,5 @@
     });
   </script>
 </body>
+
 </html>

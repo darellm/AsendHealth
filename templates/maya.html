@@ -1,269 +1,1303 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Patient Portal - Maya</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Areya - Medical AI Assistant</title>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='astra-theme.css') }}" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!--link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"-->
+  <link href="https://fonts.googleapis.com/css?family=DM+Sans%3A400%2C%2C700%7CForum%3A400&amp;display=fallback&amp;ver=4.9.1"
+  id="astra-google-fonts-css" media="all" rel="stylesheet" />
+  <!-- AsendHealth CSS -->
+  <link href="https://asendhealth.com/wp-content/themes/astra/assets/css/minified/main.min.css?ver=4.9.1"
+  id="astra-theme-css-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2"
+  id="wp-block-library-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-content/plugins/suretriggers/assets/css/st-trigger-button.css?ver=1.0.83"
+  id="st-trigger-button-style-css" media="all" rel="stylesheet" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Add debugging tools -->
+  <script src="{{ url_for('static', filename='js/maya_chat.js') }}"></script>
 </head>
 <body>
-
-  <header>
-    <nav>
+  <!-- Navigation Header -->
+   <!--nav>
       <ul>
-        <li><a href="/maya" class="active">Areya</a></li>
         <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/maya" class="active">Maya</a></li>
+        <li><a href="/history">History</a></li>
         <li><a href="/appointments">Appointments</a></li>
+        <li><a href="/feedback">Feedback</a></li>
         <li><a href="#" id="logoutBtn">Logout</a></li>
       </ul>
-    </nav>
+    </nav-->
+  <header class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+      id="masthead" itemid="#masthead" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+      <div data-toggle-type="dropdown" id="ast-desktop-header">
+        <div class="ast-main-header-wrap main-header-bar-wrap">
+          <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+            data-section="section-primary-header-builder">
+            <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+              data-section="section-primary-header-builder">
+              <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+                <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                  <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                    <div class="site-branding ast-site-identity" itemscope="itemscope"
+                      itemtype="https://schema.org/Organization">
+                      <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                          rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                            height="203" sizes="(max-width: 424px) 100vw, 424px"
+                            src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                            srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                            width="424" /></a></span>
+                    </div>
+                    <!-- .site-branding -->
+                  </div>
+                </div>
+                <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                  <div
+                    class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                    data-section="section-hb-menu-1">
+                    <div class="ast-main-header-bar-alignment">
+                      <div class="main-header-bar-navigation">
+                        <nav aria-label="Site Navigation: Main Menu"
+                          class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                          id="primary-site-navigation-desktop" itemscope="itemscope"
+                          itemtype="https://schema.org/SiteNavigationElement">
+                          <div class="main-navigation ast-inline-flex">
+                            <ul
+                              class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                              id="ast-hf-menu-1">
+                              <li
+                                class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169"
+                                id="menu-item-1169"><a class="menu-link" href="https://asendhealth.com/">Home</a></li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"
+                                id="menu-item-1170"><a class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a>
+                              </li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"
+                                id="menu-item-1172"><a class="menu-link"
+                                  href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                              <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"
+                                id="menu-item-1171"><a class="menu-link"
+                                  href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                            </ul>
+                          </div>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                  <!--div class="ast-builder-layout-element ast-flex site-header-focus-item ast-header-button-1"
+                    data-section="section-hb-button-1">
+                    <div class="ast-builder-button-wrap ast-builder-button-size-"><a class="ast-custom-button-link"
+                        href="tel:202-555-0188" target="_self">
+                        <div class="ast-custom-button">202-555-0188</div>
+                      </a><a class="menu-link" href="tel:202-555-0188" target="_self">202-555-0188</a></div>
+                  </div-->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- Main Header Bar Wrap -->
+      <div class="ast-mobile-header-wrap" data-type="dropdown" id="ast-mobile-header">
+        <div class="ast-main-header-wrap main-header-bar-wrap">
+          <div
+            class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item ast-builder-grid-row-layout-default ast-builder-grid-row-tablet-layout-default ast-builder-grid-row-mobile-layout-default"
+            data-section="section-primary-header-builder">
+            <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+              <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                  <div class="site-branding ast-site-identity" itemscope="itemscope"
+                    itemtype="https://schema.org/Organization">
+                    <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                        rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                          height="203" sizes="(max-width: 424px) 100vw, 424px"
+                          src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                          srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                          width="424" /></a></span>
+                  </div>
+                  <!-- .site-branding -->
+                </div>
+              </div>
+              <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                  data-section="section-header-mobile-trigger">
+                  <div class="ast-button-wrap">
+                    <button aria-expanded="false"
+                      class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-fill" type="button">
+                      <span class="screen-reader-text">Main Menu</span>
+                      <span class="mobile-menu-toggle-icon">
+                        <span aria-hidden="true" class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                            class="ast-mobile-svg ast-menu2-svg" fill="currentColor" height="28" version="1.1"
+                            viewbox="0 0 24 28" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z">
+                            </path>
+                          </svg></span><span aria-hidden="true"
+                          class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                            class="ast-mobile-svg ast-close-svg" fill="currentColor" height="24" version="1.1"
+                            viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                            </path>
+                          </svg></span> </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ast-mobile-header-content content-align-flex-start">
+          <div
+            class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+            data-section="section-hb-menu-1">
+            <div class="ast-main-header-bar-alignment">
+              <div class="main-header-bar-navigation">
+                <nav aria-label="Site Navigation: Main Menu"
+                  class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                  id="primary-site-navigation-mobile" itemscope="itemscope"
+                  itemtype="https://schema.org/SiteNavigationElement">
+                  <div class="main-navigation ast-inline-flex">
+                    <ul
+                      class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                      id="ast-hf-menu-1">
+                      <li
+                        class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                        <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                      </li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"><a
+                          class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a></li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"><a
+                          class="menu-link" href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                      <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"><a
+                          class="menu-link" href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </header>
   
+  <!--div class="site-content" id="content">
+    <div class="ast-container">
+      <div class="content-area primary" id="primary">
+        <main class="site-main" id="main">
+          <article class="post-2030 page type-page status-publish ast-article-single" id="post-2030"
+            itemscope="itemscope" itemtype="https://schema.org/CreativeWork"-->
+
+  <!-- Main Content -->
   <main>
-    <div class="maya-container">
-      <div class="maya-header">
-        <h1>Maya</h1>
-        <!-- Smaller Lottie for Maya icon (Animation5.json) -->
-        <div class="maya-animation-container">
-          <lottie-player
-            class="maya-animation"
-            src="{{ url_for('static', filename='Animation5.json') }}"
-            background="transparent"
-            speed="1"
-            loop
-            autoplay>
-          </lottie-player>
+    <div class="perplexity-layout">
+      <!-- Main chat column -->
+      <!--div class="main-column"-->
+      <div>
+        <div class="chat-header">
+          <h1>
+            <i class="fas fa-robot"></i>
+            Ask Areya
+          </h1>
+          <!--p>Your AI Medical Assistant</p-->
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <!-- Welcome message -->
+          <div class="bot-message">
+            <div class="message-sender">
+              <i class="fas fa-robot"></i> Areya
+            </div>
+            <div class="message-content">
+              <p>I'm Areya, your AI medical assistant. I can help with general health information, symptom analysis, and medical explanations.</p>
+              <p><i class="fas fa-info-circle"></i> Please remember that I don't replace professional medical advice. Always consult with a healthcare provider for diagnoses and treatment.</p>
+            </div>
+            <div class="message-time">Just now</div>
+          </div>
+        </div>
+        
+        <!-- Input area -->
+        <div class="input-area">
+          <textarea 
+            id="userInput" 
+            placeholder="Ask Maya a medical question..." 
+            rows="2" 
+            aria-label="Type your message"></textarea>
+          <!--button style="display:block; margin-bottom:10px;" id="sendButton" type="submit" aria-label="Send message">Send</button-->
+          <button id="sendButton" type="button" aria-label="Send message">
+            <i class="fas fa-paper-plane"></i>
+            Send
+          </button>
+        </div>
+
+        <!-- Options bar -->
+      <div class="options-bar">
+        <div class="toggle-option">
+          <span>Deep Research Mode</span>
+          <label class="switch">
+            <input type="checkbox" id="researchToggle" aria-label="Toggle Deep Research Mode">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-option">
+          <span>Show Thinking Process</span>
+          <label class="switch">
+            <input type="checkbox" id="thinkingToggle" aria-label="Toggle Thinking Process">
+            <span class="slider"></span>
+          </label>
         </div>
       </div>
 
-      <p>Welcome Sir, I am Maya, your Advanced AI Medical assistant. How can I assist you today?</p>
-      
-      <!-- Container for Qdrant-based conversations -->
-      <section id="conversations-section">
-        <h2>Conversations</h2>
-        <div id="conversations">
-          <!-- Fetched conversation items go here -->
-        </div>
-      </section>
+      </div>
 
-      <!-- Chatbot Interaction -->
-      <section id="chatbot-section">
-        <h2>Ask Maya a Question</h2>
-        <div class="chatbot-ui">
-          <input type="text" id="user-query" placeholder="Type your medical question..." />
-          <button id="ask-maya-btn">Ask Maya</button>
-          <label>
-            <input type="checkbox" id="show-thinking" checked> Show Maya's thinking process
-          </label>
+      
+      
+      <!-- Research sidebar -->
+      <div class="research-sidebar" id="research-sidebar">
+        <div class="research-header">
+          <h2><i class="fas fa-book-medical"></i> Research & References</h2>
         </div>
-        <div id="chatbot-responses">
-          <!-- Chatbot responses will appear here -->
+
+        <div class="research-status" id="research-status">
+          <div class="status-indicator">
+            <div class="pulse-dot"></div>
+            <span id="status-message">Searching web for medical information...</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar" id="research-progress"></div>
+          </div>
         </div>
-      </section>
+
+        <div class="research-content" id="research-content">
+          <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <p>Medical information will appear here when you ask a question with Deep Research Mode enabled.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
+
+  <!-- Research modal -->
+  <div id="research-modal" class="research-modal">
+    <div class="research-modal-content">
+      <div class="research-modal-header">
+        <h2><i class="fas fa-book-medical"></i> Research & References</h2>
+        <button id="close-research-modal" class="close-button" title="Close Research Panel">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="research-modal-body" class="research-modal-body">
+        <!-- Content will be dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Replace the research toggle functionality with a consolidated version -->
   <script>
-    document.addEventListener("DOMContentLoaded", async function() {
-      // Basic setup & conversation retrieval from Qdrant
-      const pointId = localStorage.getItem("pointId");
-      if (!pointId) {
-        window.location.href = "/login";
-        return;
+  // Fix research toggle functionality - runs after document is loaded
+  document.addEventListener('DOMContentLoaded', function() {
+    const researchToggle = document.getElementById('researchToggle');
+    const researchSidebar = document.getElementById('research-sidebar');
+    
+    if (researchToggle && researchSidebar) {
+      // Initially ensure sidebar is hidden
+      if (!researchSidebar.classList.contains('active')) {
+        console.log("Initially hiding research sidebar");
       }
-
-      document.getElementById("logoutBtn").addEventListener("click", function(e) {
-        e.preventDefault();
-        localStorage.removeItem("pointId");
-        localStorage.removeItem("patientGuid");
-        window.location.href = "https://asendhealth.com/";
-      });
-
-      try {
-        // Retrieve existing conversation from Qdrant
-        const response = await fetch("/api/patient-records", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ point_id: pointId })
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch patient data.");
-
-        const patientData = await response.json();
-        console.log("Patient Data:", patientData);
-
-        // Display existing conversation if present
-        if (patientData.conversations && patientData.conversations.length > 0) {
-          const conversationHTML = patientData.conversations.map(convo => `
-            <div class="conversation-item">
-              <p>
-                <strong>${convo.sender}</strong>
-                <span class="timestamp">(${new Date(convo.timestamp).toLocaleString()})</span>
-              </p>
-              <p>${convo.message}</p>
-            </div>
-          `).join("");
-          document.getElementById("conversations").innerHTML = conversationHTML;
+      
+      // Toggle research mode when checkbox is clicked
+      researchToggle.addEventListener('change', function() {
+        console.log("Research toggle changed to:", this.checked);
+        window.deepResearchMode = this.checked;
+        
+        if (this.checked) {
+          // Show sidebar
+          console.log("Showing research sidebar");
+          researchSidebar.classList.add('active');
+          document.getElementById('userInput').placeholder = "Ask a medical question (Deep Research Mode enabled)...";
         } else {
-          document.getElementById("conversations").innerHTML = "<p>No conversations found.</p>";
+          // Hide sidebar
+          console.log("Hiding research sidebar");
+          researchSidebar.classList.remove('active');
+          document.getElementById('userInput').placeholder = "Ask Maya a medical question...";
         }
-      } catch (error) {
-        console.error("Error fetching patient data:", error);
-        document.getElementById("conversations").innerHTML = "<p>Error loading conversations.</p>";
+      });
+    }
+    
+    // Ensure old modal is hidden completely
+    const oldResearchModal = document.getElementById('research-modal');
+    if (oldResearchModal) {
+      oldResearchModal.style.display = 'none';
+    }
+  });
+  
+  // Fix the toggleSourcePreview function to ensure iframe loading works correctly
+  window.toggleSourcePreview = function(sourceElement) {
+    console.log("Toggle source preview called for:", sourceElement);
+    
+    if (!sourceElement) {
+        console.error("No source element provided");
+        return;
+    }
+    
+    // Handle if sourceElement is an ID string
+    if (typeof sourceElement === 'string') {
+        sourceElement = document.getElementById(sourceElement);
+        if (!sourceElement) {
+            console.error(`Element with ID ${sourceElement} not found`);
+            return;
+        }
+    }
+    
+    // Find the preview element
+    const previewElement = sourceElement.querySelector('.source-preview');
+    if (!previewElement) {
+        console.error("No preview element found");
+        return;
+    }
+    
+    // Toggle the active class
+    previewElement.classList.toggle('active');
+    
+    // Update button text based on state
+    const button = sourceElement.querySelector('.preview-button');
+    if (button) {
+        if (previewElement.classList.contains('active')) {
+            button.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Preview';
+            
+            // Load iframe if not already loaded
+            const iframe = previewElement.querySelector('iframe');
+            if (iframe && !iframe.src) {
+                const url = sourceElement.getAttribute('data-url');
+                if (url) {
+                    console.log("Loading iframe with URL:", url);
+                    iframe.src = url;
+                }
+            }
+        } else {
+            button.innerHTML = '<i class="fas fa-eye"></i> Preview Source';
+        }
+    }
+    
+    // Ensure external links are properly functioning
+    const externalLinks = sourceElement.querySelectorAll('.external-link');
+    externalLinks.forEach(link => {
+        if (!link.getAttribute('listener-added')) {
+            link.setAttribute('listener-added', 'true');
+            const url = link.getAttribute('href');
+            link.addEventListener('click', function(e) {
+                console.log("Opening external source:", url);
+                window.open(url, '_blank');
+            });
+        }
+    });
+  };
+  </script>
+
+  <!-- Update the updateResearchPanel function to work with the sidebar -->
+  <script>
+  // Consolidated function to update research panel - replace all versions
+  function updateResearchPanel(content) {
+    const researchSidebar = document.getElementById('research-sidebar');
+    const researchContent = document.getElementById('research-content');
+    const researchToggle = document.getElementById('researchToggle');
+    const researchStatus = document.getElementById('research-status');
+    const researchProgress = document.getElementById('research-progress');
+    
+    if (!researchSidebar || !researchContent) {
+      console.error("Research sidebar elements not found");
+      return;
+    }
+    
+    // Hide the loading status
+    if (researchStatus) {
+      researchStatus.style.display = 'none';
+    }
+    
+    // Reset progress bar
+    if (researchProgress) {
+      researchProgress.style.width = '0%';
+    }
+    
+    if (!content || content.trim() === '') {
+      researchContent.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-search"></i>
+          <p>No research data was returned for this query.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    // Process research content to enhance styling
+    let enhancedResearch = enhanceResearchContent(content);
+    researchContent.innerHTML = enhancedResearch;
+    
+    // Show the sidebar if toggle is checked
+    if (researchToggle && researchToggle.checked && content && content.trim() !== '') {
+      researchSidebar.classList.add('active');
+    }
+  }
+
+  // Helper function to enhance research content
+  function enhanceResearchContent(content) {
+    try {
+      // Clean the research content
+      content = content.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+      
+      // Check if the content contains HTML markup
+      const hasHtmlMarkup = /<\/?[a-z][\s\S]*>/i.test(content);
+      
+      if (!hasHtmlMarkup) {
+        // Format plain text as HTML
+        return `<div class="research-plain-text">${content}</div>`;
       }
+      
+      // Add a disclaimer if not already present
+      if (!content.includes('medical-disclaimer')) {
+        content = `<div class="medical-disclaimer">
+          <p><i class="fas fa-info-circle"></i> The following information was collected from various medical sources.</p>
+        </div>` + content;
+      }
+      
+      return content;
+    } catch (error) {
+      console.error("Error enhancing research content:", error);
+      return content;
+    }
+  }
+  </script>
 
-      // Chatbot button logic
-      document.getElementById("ask-maya-btn").addEventListener("click", async function() {
-        const userQuery = document.getElementById("user-query").value.trim();
-        const showThinking = document.getElementById("show-thinking").checked;
-        if (!userQuery) return;
-
-        // Clear input
-        document.getElementById("user-query").value = "";
-
-        // Display user's query
-        const chatbotResponses = document.getElementById("chatbot-responses");
-        chatbotResponses.innerHTML += `
-          <div class="conversation-item user-message">
-            <p><strong>You:</strong></p>
-            <p>${userQuery}</p>
-          </div>
-        `;
-
-        try {
-          const resp = await fetch("/api/chatbot", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-              query: userQuery, 
-              point_id: pointId,
-              show_thinking: showThinking
-            })
+  <!-- Script for handling the chat -->
+  <script>
+    // Get DOM elements
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+    const researchToggle = document.getElementById('researchToggle');
+    const thinkingToggle = document.getElementById('thinkingToggle');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const researchSide = document.getElementById('research-side');
+    const chatContainer = document.querySelector('.chat-container');
+    
+    // Check if user is logged in
+    const pointId = localStorage.getItem("pointId");
+    if (!pointId) {
+      window.location.href = "/login";
+    }
+    
+    // Fix keyboard event - ensure it works with enter key
+    if (userInput) {
+      userInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault(); // Prevent default to avoid newline
+          sendMessage();
+        }
+      });
+    }
+    
+    // Fix send button click event
+    if (sendButton) {
+      sendButton.addEventListener('click', sendMessage);
+    }
+    
+    // Set initial deep research mode state
+    window.deepResearchMode = false;
+    
+    // Fix research toggle functionality
+    if (researchToggle && researchSide) {
+      researchToggle.addEventListener('change', function() {
+        console.log("Research toggle changed:", this.checked);
+        window.deepResearchMode = this.checked;
+        
+        // Show/hide research side panel
+        researchSide.style.display = this.checked ? 'flex' : 'none';
+        
+        // Update placeholder text
+        if (userInput) {
+          userInput.placeholder = this.checked ? 
+            "Ask a medical question (Deep Research Mode enabled)..." : 
+            "Ask Maya a medical question...";
+        }
+      });
+    }
+    
+    // Ensure modal close button works
+    const closeResearchModal = document.getElementById('close-research-modal');
+    if (closeResearchModal && researchModal) {
+      closeResearchModal.addEventListener('click', function() {
+        researchModal.style.display = 'none';
+      });
+    }
+  </script>
+  
+  <!-- Debug scripts -->
+  <script>
+    // Debug panel toggle function
+    function toggleDebugPanel() {
+      const panel = document.getElementById('maya-debug-panel');
+      if (panel) {
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      } else {
+        // If panel doesn't exist yet, create it through the debug system
+        if (typeof createDebugPanel === 'function') {
+          const newPanel = createDebugPanel();
+          if (newPanel) newPanel.style.display = 'block';
+        }
+      }
+    }
+    
+    // Debug toggle button
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create debug toggle button
+      const debugToggle = document.createElement('button');
+      debugToggle.id = 'debug-toggle';
+      debugToggle.innerHTML = '<i class="fas fa-bug"></i>';
+      debugToggle.style.cssText = 'position: fixed; bottom: 10px; right: 10px; background: #333; color: #fff; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 16px; cursor: pointer; z-index: 9999; opacity: 0.7;';
+      debugToggle.onclick = toggleDebugPanel;
+      
+      // Add button to body
+      document.body.appendChild(debugToggle);
+      
+      // Function to run more detailed diagnostic checks
+      window.runMayaDiagnostics = function() {
+        // Create a diagnostic report
+        const report = {
+          browser: navigator.userAgent,
+          windowSize: `${window.innerWidth}x${window.innerHeight}`,
+          localStorage: Boolean(window.localStorage),
+          sessionStorage: Boolean(window.sessionStorage),
+          cookies: Boolean(navigator.cookieEnabled),
+          pointId: localStorage.getItem('pointId') || 'Not set',
+          lastError: localStorage.getItem('mayaLastError') || 'None recorded',
+          apiEndpoint: '/api/chatbot'
+        };
+        
+        console.log('%c[Maya Diagnostics] System Report:', 'color: #9C27B0; font-weight: bold;', report);
+        
+        // Test connectivity
+        const testStartTime = performance.now();
+        fetch('/api/chatbot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query: 'diagnostic test',
+            point_id: '',
+            deep_research_mode: false,
+            show_thinking: false
+          })
+        })
+        .then(response => {
+          const testEndTime = performance.now();
+          const testDuration = testEndTime - testStartTime;
+          
+          console.log('%c[Maya Diagnostics] API Response:', 'color: #9C27B0; font-weight: bold;', {
+            status: response.status,
+            ok: response.ok,
+            statusText: response.statusText,
+            responseTime: `${testDuration.toFixed(0)}ms`
           });
           
-          if (!resp.ok) throw new Error("Chatbot request failed.");
+          return response.text();
+        })
+        .then(text => {
+          try {
+            const json = JSON.parse(text);
+            console.log('%c[Maya Diagnostics] Response Data:', 'color: #9C27B0; font-weight: bold;', json);
+            // Store the successful response for debugging
+            localStorage.setItem('mayaLastResponse', JSON.stringify(json));
+          } catch (e) {
+            console.log('%c[Maya Diagnostics] Response (not JSON):', 'color: #9C27B0; font-weight: bold;', text.substring(0, 500));
+            // Store non-JSON response
+            localStorage.setItem('mayaLastResponse', text.substring(0, 1000));
+          }
           
-          const data = await resp.json();
-          console.log("Chatbot Response:", data);
-
-          displayMayaResponse(data, chatbotResponses);
+          alert('Diagnostic test completed. Check console for details.');
+        })
+        .catch(error => {
+          console.error('%c[Maya Diagnostics] Connection Error:', 'color: #9C27B0; font-weight: bold;', error);
+          localStorage.setItem('mayaLastError', error.toString());
           
-        } catch (err) {
-          console.error("Error calling chatbot:", err);
-          chatbotResponses.innerHTML += `
-            <div class="conversation-item maya-message error">
-              <p><strong>Maya:</strong></p>
-              <p>Sorry, something went wrong.</p>
-            </div>
-          `;
+          alert(`Diagnostic test failed: ${error.message}\nSee console for details.`);
+        });
+        
+        return report;
+      };
+      
+      // Debug shortcut (Ctrl+Shift+Alt+D)
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.shiftKey && e.altKey && e.code === 'KeyD') {
+          window.runMayaDiagnostics();
         }
       });
     });
+  </script>
 
-    // Update the response handling
-    function displayMayaResponse(data, chatbotResponses) {
-      let responseHTML = '<div class="conversation-item maya-message">';
-      
-      // Only show thinking process if explicitly enabled and not empty
-      if (data.show_thinking && data.thinking && document.getElementById("show-thinking").checked) {
-        responseHTML += `
-          <details class="thinking-details">
-            <summary>View Maya's Analysis</summary>
-            <div class="thinking-process">
-              ${data.thinking.split('\n').map(line => `<p>${line.trim()}</p>`).join('')}
-            </div>
-          </details>
-        `;
+  <!-- Add the function to add user message to the chat -->
+  <script>
+  // Function to add user message to the chat
+  function addUserMessage(message) {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = 'user-message';
+    
+    const senderDiv = document.createElement('div');
+    senderDiv.className = 'message-sender';
+    senderDiv.innerHTML = '<i class="fas fa-user"></i> You';
+    
+    const messageContent = document.createElement('div');
+    messageContent.className = 'message-content';
+    messageContent.innerText = message;
+    
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'message-time';
+    timeDiv.textContent = 'Just now';
+    
+    messageElement.appendChild(senderDiv);
+    messageElement.appendChild(messageContent);
+    messageElement.appendChild(timeDiv);
+    
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Save to current conversation if needed
+    if (window.currentConversation) {
+      if (!window.currentConversation.messages) {
+        window.currentConversation.messages = [];
       }
-      
-      // Format the main response
-      const formattedReply = data.reply
-        .replace(/##\s+([^\n]+)/g, '<h3>$1</h3>')  // Convert ## headers to h3
-        .replace(/•\s+([^\n]+)/g, '<li>$1</li>')   // Convert bullet points to list items
-        .replace(/\[AI Medical Disclaimer:[^\]]+\]/g, '<div class="disclaimer">$&</div>');
-      
-      responseHTML += `
-        <div class="maya-final-response">
-          <p><strong>Maya:</strong></p>
-          <div class="response-content">${formattedReply}</div>
-        </div>
-      </div>`;
-      
-      chatbotResponses.innerHTML += responseHTML;
+      window.currentConversation.messages.push({
+        role: 'user',
+        content: message,
+        timestamp: new Date().toISOString()
+      });
+      }
     }
   </script>
 
-  <style>
-    .thinking-process {
-      background: #f5f5f5;
-      padding: 10px;
-      margin: 10px 0;
-      border-left: 3px solid #007bff;
-    }
-    .thinking-process pre {
-      white-space: pre-wrap;
-      margin: 0;
-      font-family: inherit;
-    }
-    .final-response {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .thinking-details {
-      margin: 10px 0;
-      padding: 5px;
-      background: #f8f9fa;
-      border-radius: 4px;
-    }
-    .thinking-details summary {
-      cursor: pointer;
-      color: #666;
-      font-size: 0.9em;
-    }
-    .thinking-process {
-      padding: 10px;
-      margin-top: 5px;
-      border-left: 3px solid #007bff;
-      font-size: 0.9em;
-    }
-    .maya-final-response {
-      margin-top: 10px;
-    }
-    .maya-final-response p {
-      margin: 5px 0;
-    }
-    .maya-final-response h3 {
-      color: #2c3e50;
-      margin: 15px 0 10px 0;
-      font-size: 1.1em;
+  <!-- Add this completely self-contained script that will fix the issues -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("Maya Chat Interface - Loading Complete");
+    
+    // Get critical DOM elements
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+    const researchToggle = document.getElementById('researchToggle');
+    const researchSide = document.getElementById('research-side');
+    const chatMessages = document.getElementById('chat-messages');
+    
+    console.log("Elements found:", {
+      userInput: !!userInput, 
+      sendButton: !!sendButton, 
+      researchToggle: !!researchToggle,
+      researchSide: !!researchSide,
+      chatMessages: !!chatMessages
+    });
+    
+    // 1. Fix Enter key submission
+    if (userInput) {
+      userInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          console.log("Enter key pressed - submitting message");
+          e.preventDefault();
+          if (sendButton) sendButton.click();
+          else sendMessage(); // Direct call as fallback
+        }
+      });
     }
     
-    .maya-final-response li {
-      margin: 5px 0;
-      list-style-type: none;
-      position: relative;
-      padding-left: 20px;
+    // 2. Fix research toggle to show/hide side panel
+    if (researchToggle && researchSide) {
+      researchToggle.addEventListener('change', function() {
+        console.log("Research toggle changed:", this.checked);
+        window.deepResearchMode = this.checked;
+        
+        // Show/hide research side panel
+        researchSide.style.display = this.checked ? 'flex' : 'none';
+        
+        // Update placeholder text
+        if (userInput) {
+          userInput.placeholder = this.checked ? 
+            "Ask a medical question (Deep Research Mode enabled)..." : 
+            "Ask Maya a medical question...";
+        }
+      });
     }
     
-    .maya-final-response li:before {
-      content: "•";
-      position: absolute;
-      left: 0;
-      color: #007bff;
+    // 4. Override/fix the sendMessage function
+    window.sendMessage = function() {
+      const userInput = document.getElementById('userInput');
+      const message = userInput?.value?.trim();
+      
+      if (!message) {
+        console.log("Empty message - not sending");
+        return;
+      }
+      
+      console.log("Sending message:", message);
+      
+      // Clear input
+      userInput.value = '';
+      
+      // Add user message to chat
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'user-message';
+      messageDiv.innerHTML = `
+        <div class="message-sender"><i class="fas fa-user"></i> You</div>
+        <div class="message-content">${message}</div>
+        <div class="message-time">Just now</div>
+      `;
+      
+      if (chatMessages) {
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Show thinking indicator if enabled
+      const showThinking = document.getElementById('thinkingToggle')?.checked || false;
+      if (showThinking) {
+        // Add thinking indicator
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.id = 'maya-thinking';
+        thinkingDiv.className = 'bot-message thinking';
+        thinkingDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">
+            <div class="thinking-indicator">
+              <i class="fas fa-brain"></i>
+              <span>Maya is thinking</span>
+            </div>
+          </div>
+          <div class="message-time">Just now</div>
+        `;
+        chatMessages.appendChild(thinkingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        console.log("Added thinking indicator");
+      }
+      
+      // Show web scraping process if research is enabled
+      const deepResearchMode = document.getElementById('researchToggle')?.checked || false;
+      if (deepResearchMode) {
+        // Show the research sidebar if it's hidden
+        const researchSidebar = document.getElementById('research-sidebar');
+        if (researchSidebar) {
+          researchSidebar.classList.add('active');
+        }
+        
+        // Reset and show research status
+        const researchStatus = document.getElementById('research-status');
+        if (researchStatus) {
+          researchStatus.style.display = 'block';
+        }
+        
+        // Start the animation
+        startScrapingAnimation();
+      }
+      
+      // Get the current toggle states
+      
+      // Prepare API call payload
+      const payload = {
+        query: message,
+        point_id: localStorage.getItem("pointId") || "",
+        deep_research_mode: deepResearchMode,
+        show_thinking: showThinking
+      };
+      
+      console.log("API payload:", payload);
+      
+      // Call API
+      fetch('/api/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        console.log("API response status:", response.status);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        return response.text();
+      })
+      .then(text => {
+        console.log("Response received, length:", text.length);
+        
+        // Remove thinking indicator
+        const thinkingElement = document.getElementById('maya-thinking');
+        if (thinkingElement) thinkingElement.remove();
+        
+        // Stop scraping animation
+        stopScrapingAnimation();
+        
+        // Process response
+        let data;
+        let researchContent = '';
+        
+        // Try parsing as JSON first
+        try {
+          data = JSON.parse(text);
+          console.log("Successfully parsed response as JSON");
+        } catch (e) {
+          console.log("Not JSON, processing as text with separator");
+          // Log the first 100 characters to see what we're working with
+          console.log("Response preview:", text.substring(0, 100) + "...");
+          
+          // Split by the separator
+          const parts = text.split('|||');
+          console.log("Split response into", parts.length, "parts");
+          
+          if (parts.length >= 2) {
+            data = {
+              reply: parts[0] || "",
+              research: parts[1] || ""
+            };
+            researchContent = parts[1] || "";
+            console.log("Research content length:", researchContent.length);
+          } else {
+            console.warn("Could not split response properly, using full text as reply");
+            data = {
+              reply: text,
+              research: ""
+            };
+          }
+        }
+        
+        // Add bot message
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'bot-message';
+        responseDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">${data.reply || text}</div>
+          <div class="message-time">Just now</div>
+        `;
+        
+        if (chatMessages) {
+          chatMessages.appendChild(responseDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Update research panel if deep research mode is enabled
+        if (deepResearchMode) {
+          console.log("Deep research mode is enabled");
+          
+          // Get the research sidebar element
+          const researchSidebar = document.getElementById('research-sidebar');
+          if (!researchSidebar) {
+            console.error("Could not find research-sidebar element");
+            return;
+          }
+          
+          // Make sure sidebar is visible
+          researchSidebar.classList.add('active');
+          
+          // Get the research content element and populate it
+          const researchContentEl = document.getElementById('research-content');
+          if (!researchContentEl) {
+            console.error("Could not find research-content element");
+            return;
+          }
+          
+          // Hide the loading status
+          const researchStatus = document.getElementById('research-status');
+          if (researchStatus) {
+            researchStatus.style.display = 'none';
+          }
+          
+          // Check if we have research content to display
+          if (data.research && data.research.trim()) {
+            console.log("Displaying research content");
+            researchContentEl.innerHTML = data.research;
+          } else if (researchContent && researchContent.trim()) {
+            console.log("Displaying research content from split");
+            researchContentEl.innerHTML = researchContent;
+          } else {
+            console.warn("No research content available");
+            researchContentEl.innerHTML = `
+              <div class="empty-state">
+                <i class="fas fa-search"></i>
+                <p>No research information was found for this query.</p>
+                <p>Try another medical question to see research results.</p>
+              </div>
+            `;
+          }
+          
+          // Fix any source preview buttons that might be in the research content
+          const sourceButtons = researchContentEl.querySelectorAll('.preview-button');
+          sourceButtons.forEach(button => {
+            if (!button.hasAttribute('onclick')) {
+              console.log("Fixing preview button without onclick");
+              button.setAttribute('onclick', 'toggleSourcePreview(this.closest(".research-source"))');
+            }
+          });
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        
+        // Remove thinking indicator
+        const thinkingElement = document.getElementById('maya-thinking');
+        if (thinkingElement) thinkingElement.remove();
+        
+        // Stop scraping animation
+        stopScrapingAnimation();
+        
+        // Add error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'bot-message error-message';
+        errorDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">
+            <p><strong>Error:</strong> ${error.message}</p>
+            <p>Please try again or refresh the page.</p>
+          </div>
+        `;
+        
+        if (chatMessages) {
+          chatMessages.appendChild(errorDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      });
+    };
+    
+    // 5. Ensure send button uses our fixed function
+    if (sendButton) {
+      // Remove any existing event listeners by cloning and replacing
+      const newSendButton = sendButton.cloneNode(true);
+      sendButton.parentNode.replaceChild(newSendButton, sendButton);
+      
+      // Add the correct event listener to the new button
+      newSendButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.sendMessage();
+      });
+      
+      console.log("Send button event listener fixed");
     }
     
-    .disclaimer {
-      background: #fff3cd;
-      color: #856404;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 4px;
-      font-size: 0.9em;
+    // Animation for web scraping process
+    window.startScrapingAnimation = function() {
+      // Get elements
+      const researchStatus = document.getElementById('research-status');
+      const researchProgress = document.getElementById('research-progress');
+      const statusMessage = document.getElementById('status-message');
+      
+      // Exit if elements don't exist
+      if (!researchStatus || !researchProgress || !statusMessage) {
+        console.error("Research status elements not found");
+        return;
+      }
+      
+      // Show research status
+      researchStatus.style.display = 'block';
+      
+      // Reset progress
+      researchProgress.style.width = '0%';
+      statusMessage.textContent = 'Searching medical sources...';
+      
+      // Animation timeline - expand scope to include variables
+      let currentStep = 0;
+      const totalSteps = 5;
+      const messages = [
+        'Searching medical databases...',
+        'Finding reliable sources...',
+        'Extracting medical information...',
+        'Analyzing medical content...',
+        'Compiling research findings...'
+      ];
+      
+      // Clear any existing animation
+      if (window.scrapingInterval) {
+        clearInterval(window.scrapingInterval);
+      }
+      
+      // Set up interval to update progress and messages
+      window.scrapingInterval = setInterval(() => {
+        currentStep++;
+        
+        // Update progress bar
+        const progress = Math.min(90, (currentStep / totalSteps) * 90);
+        researchProgress.style.width = `${progress}%`;
+        
+        // Update message
+        if (currentStep < totalSteps) {
+          statusMessage.textContent = messages[currentStep % messages.length];
+        } else {
+          // Stop after all steps
+          clearInterval(window.scrapingInterval);
+        }
+      }, 1500);
+      
+      console.log("Started scraping animation");
+    };
+    
+    window.stopScrapingAnimation = function() {
+      // Get elements
+      const researchStatus = document.getElementById('research-status');
+      const researchProgress = document.getElementById('research-progress');
+      const statusMessage = document.getElementById('status-message');
+      
+      // Clear any existing animation
+      if (window.scrapingInterval) {
+        clearInterval(window.scrapingInterval);
+        window.scrapingInterval = null;
+      }
+      
+      // Exit if elements don't exist
+      if (!researchStatus || !researchProgress || !statusMessage) {
+        console.error("Research status elements not found");
+        return;
+      }
+      
+      // Complete the progress
+      researchProgress.style.width = '100%';
+      statusMessage.textContent = 'Research complete!';
+      
+      // Hide the status after a delay
+      setTimeout(() => {
+        researchStatus.style.display = 'none';
+        researchProgress.style.width = '0%';
+      }, 1500);
+      
+      console.log("Stopped scraping animation");
+    };
+    
+    // Function to update research panel
+    window.updateResearchPanel = function(content) {
+      const researchContent = document.getElementById('research-content');
+      
+      if (!researchContent) return;
+      
+      if (!content || content.trim() === '') {
+        researchContent.innerHTML = `
+          <div class="empty-research">
+            <p><i class="fas fa-info-circle"></i> No research data was returned for this query.</p>
+          </div>
+        `;
+      } else {
+        researchContent.innerHTML = content;
+      }
+    };
+  });
+  </script>
+
+  <!-- Make sure toggle functionality is properly initialized -->
+  <script>
+    // Initialize thinking toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const thinkingToggle = document.getElementById('thinkingToggle');
+      if (thinkingToggle) {
+        console.log("Initializing thinking toggle");
+        thinkingToggle.addEventListener('change', function() {
+          console.log("Thinking toggle changed to:", this.checked);
+          window.showThinkingProcess = this.checked;
+        });
+        
+        // Set initial state
+        window.showThinkingProcess = thinkingToggle.checked;
+        console.log("Initial thinking toggle state:", window.showThinkingProcess);
+      }
+    });
+  </script>
+
+  <!-- Script to ensure all external links in research sources are clickable -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Function to make all external links clickable
+    function makeExternalLinksClickable() {
+        // Get all external links in research sources
+        const externalLinks = document.querySelectorAll('.research-source .external-link');
+        
+        // Add click handler to each link
+        externalLinks.forEach(link => {
+            if (!link.getAttribute('listener-added')) {
+                const url = link.getAttribute('href');
+                if (url) {
+                    // Mark as processed to avoid duplicate listeners
+                    link.setAttribute('listener-added', 'true');
+                    
+                    // Ensure the link opens in a new tab
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                    
+                    // Add click event listener
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault(); // Prevent default to handle ourselves
+                        console.log('Opening external source:', url);
+                        window.open(url, '_blank');
+                    });
+                    
+                    // Make the link more visible
+                    link.style.pointerEvents = 'auto';
+                    link.style.cursor = 'pointer';
+                }
+            }
+        });
     }
     
-    .response-content {
-      line-height: 1.5;
+    // Run immediately for existing links
+    makeExternalLinksClickable();
+    
+    // Set up an observer to handle dynamically added links
+    const researchContent = document.getElementById('research-content');
+    if (researchContent) {
+        const observer = new MutationObserver(function(mutations) {
+            makeExternalLinksClickable();
+        });
+        
+        observer.observe(researchContent, {
+            childList: true,
+            subtree: true
+        });
     }
-  </style>
+    
+    // Also hook into the updateResearchPanel function to ensure links are clickable
+    const originalUpdateResearchPanel = window.updateResearchPanel;
+    window.updateResearchPanel = function(content) {
+        // Call the original function
+        if (originalUpdateResearchPanel) {
+            originalUpdateResearchPanel(content);
+        } else if (window.enhanceResearchContent) {
+            const researchContent = document.getElementById('research-content');
+            if (researchContent && content) {
+                researchContent.innerHTML = window.enhanceResearchContent(content);
+            }
+        }
+        
+        // Make links clickable after content is updated
+        setTimeout(makeExternalLinksClickable, 100);
+    };
+  });
+  </script>
+
+  <!-- Add a function to toggle full content -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add a function to toggle full content
+    window.toggleFullContent = function(button) {
+      const contentDiv = button.previousElementSibling;
+      if (contentDiv.style.display === "none" || !contentDiv.style.display) {
+        contentDiv.style.display = "block";
+        button.textContent = "Hide Full Content";
+      } else {
+        contentDiv.style.display = "none";
+        button.textContent = "Show Full Content";
+      }
+    };
+    
+    // Enhanced research content function
+    window.enhanceResearchContent = function(content) {
+      // Add styling to the research content
+      if (content) {
+        // Parse links for clickability
+        content = content.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="external-link">$1</a>');
+        
+        // Add collapsible sections for better organization
+        if (content.includes('<h2>') || content.includes('<h3>')) {
+          const sections = content.split(/<h[23][^>]*>/);
+          if (sections.length > 1) {
+            let enhancedContent = '<div class="enhanced-research">';
+            let sectionHeaders = content.match(/<h[23][^>]*>.*?<\/h[23]>/g) || [];
+            
+            for (let i = 1; i < sections.length; i++) {
+              const sectionId = `section-${i}`;
+              enhancedContent += `<div class="research-section">`;
+              enhancedContent += `${sectionHeaders[i-1] || ''}`;
+              enhancedContent += `<div class="section-content">${sections[i]}</div>`;
+              enhancedContent += `</div>`;
+            }
+            
+            enhancedContent += '</div>';
+            return enhancedContent;
+          }
+        }
+      }
+      return content;
+    };
+    
+    // Process scraped content when available
+    function processScrapedContent() {
+      const researchContent = document.getElementById('research-content');
+      if (researchContent) {
+        // Find all scraped content blocks and process them
+        const scrapedContents = researchContent.querySelectorAll('.scraped-content');
+        scrapedContents.forEach(content => {
+          // Add click handlers for the toggle buttons if they don't have them
+          const toggleButton = content.querySelector('.toggle-full-content');
+          if (toggleButton && !toggleButton.hasAttribute('data-initialized')) {
+            toggleButton.addEventListener('click', function() {
+              const fullContent = this.previousElementSibling;
+              if (fullContent.style.display === 'none' || !fullContent.style.display) {
+                fullContent.style.display = 'block';
+                this.textContent = 'Hide Full Content';
+              } else {
+                fullContent.style.display = 'none';
+                this.textContent = 'Show Full Content';
+              }
+            });
+            toggleButton.setAttribute('data-initialized', 'true');
+          }
+        });
+      }
+    }
+    
+    // Make external links open in a new tab
+    function makeExternalLinksClickable() {
+      const researchContent = document.getElementById('research-content');
+      if (researchContent) {
+        const links = researchContent.querySelectorAll('a:not([data-clickable="true"])');
+        links.forEach(link => {
+          // Skip if already processed
+          if (link.getAttribute('data-clickable') === 'true') return;
+          
+          // Set target to _blank to open in new tab
+          link.setAttribute('target', '_blank');
+          // Add rel for security
+          link.setAttribute('rel', 'noopener noreferrer');
+          // Mark as processed
+          link.setAttribute('data-clickable', 'true');
+          
+          // Add click event listener to handle the click
+          link.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent event bubbling
+          });
+        });
+      }
+    }
+    
+    // Override the original updateResearchPanel function
+    const originalUpdateResearchPanel = window.updateResearchPanel;
+    window.updateResearchPanel = function(content) {
+      // Call the original function
+      if (originalUpdateResearchPanel) {
+        originalUpdateResearchPanel(content);
+      } else if (window.enhanceResearchContent) {
+        const researchContent = document.getElementById('research-content');
+        if (researchContent && content) {
+          researchContent.innerHTML = window.enhanceResearchContent(content);
+        }
+      }
+      
+      // Make links clickable after content is updated
+      setTimeout(() => {
+        makeExternalLinksClickable();
+        processScrapedContent();
+      }, 100);
+    };
+  });
+  </script>
 </body>
 </html>
+

@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Appointments - AsendHealth</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='astra-theme.css') }}" />
+  <!-- Google Fonts -->
+  <!--link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!--link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"-->
+  <link href="https://fonts.googleapis.com/css?family=DM+Sans%3A400%2C%2C700%7CForum%3A400&amp;display=fallback&amp;ver=4.9.1"
+  id="astra-google-fonts-css" media="all" rel="stylesheet" />
+  <!-- AsendHealth CSS -->
+  <link href="https://asendhealth.com/wp-content/themes/astra/assets/css/minified/main.min.css?ver=4.9.1"
+  id="astra-theme-css-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2"
+  id="wp-block-library-css" media="all" rel="stylesheet" />
+  <link href="https://asendhealth.com/wp-content/plugins/suretriggers/assets/css/st-trigger-button.css?ver=1.0.83"
+  id="st-trigger-button-style-css" media="all" rel="stylesheet" />
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background-color: #f0f5fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #334155;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    
+    /*Commented so the header styling is applied from style.css */
+    /*header {
+      background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }*/
+    
+    header nav ul {
+      display: flex;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    header nav li a {
+      color: white;
+      display: block;
+      padding: 15px 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header nav li a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    header nav li a.active {
+      font-weight: 600;
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    header nav li a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+    
+    main {
+      padding: 30px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+    
+    main h1 {
+      color: var(--ast-global-color-1); /*#1e40af;*/
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    main p {
+      color: #64748b;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .appointments-container {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 30px;
+      position: relative;
+    }
+    
+    .filter-panel, .appointments-list, .appointment-form {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      padding: 25px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      transition: all 0.3s ease;
+    }
+    
+    .filter-panel:hover, .appointments-list:hover, .appointment-form:hover {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    
+    .filter-panel {
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(226, 232, 240, 0.6);
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.05);
+      padding: 30px;
+      height: fit-content;
+      position: sticky;
+      top: 30px;
+    }
+    
+    .filter-panel h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: var(--ast-global-color-1); /*#1e3a8a;*/
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .filter-section {
+      margin-bottom: 25px;
+    }
+    
+    .filter-section h3 {
+      margin-top: 0;
+      padding-bottom: 10px;
+      color: var(--text-medium); /*#334155;*/
+      font-size: 1.1rem;
+      font-weight: 600;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .filter-section h3::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--ast-global-color-1); /*#3b82f6;*/
+      margin-right: 8px;
+    }
+    
+    .filter-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .filter-options label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #475569;
+      transition: color 0.2s ease;
+    }
+    
+    .filter-options label:hover {
+      color: var(--ast-global-color-1); /*#1e40af;*/
+    }
+    
+    .filter-options input[type="checkbox"] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #cbd5e1;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    
+    .filter-options input[type="checkbox"]:checked {
+      background-color: var(--ast-global-color-1); /*#3b82f6;*/
+      border-color: var(--ast-global-color-1); /*#3b82f6;*/
+    }
+    
+    .filter-options input[type="checkbox"]:checked::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    
+    .filter-options select {
+      padding: 10px 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #475569;
+      background-color: white;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .filter-options select:focus {
+      outline: none;
+      border-color: var(--ast-global-color-1); /*#3b82f6;*/
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .appointments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .hospital-card {
+      background: linear-gradient(to right, #ffffff, #f8fafc);
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hospital-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--ast-global-color-1), #60a5fa);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .hospital-card:hover {
+      border-color: #bfdbfe;
+      box-shadow: 0 10px 15px rgba(59, 130, 246, 0.1);
+      transform: translateY(-3px);
+    }
+    
+    .hospital-card:hover::before {
+      opacity: 1;
+    }
+    
+    .hospital-card.selected {
+      border-color: var(--ast-global-color-1); /*#3b82f6;*/
+      background-color: #f0f7ff;
+    }
+    
+    .hospital-card.selected::before {
+      opacity: 1;
+    }
+    
+    .hospital-card h3 {
+      margin-top: 0;
+      color: var(--ast-global-color-1); /*#1e40af;*/
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .hospital-meta {
+      display: flex;
+      gap: 18px;
+      margin: 12px 0;
+      font-size: 0.9em;
+      color: var(--text-light); /*#64748b;*/
+    }
+    
+    .hospital-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .hospital-meta svg {
+      width: 16px;
+      height: 16px;
+      fill: #60a5fa;
+    }
+    
+    .doctor-list {
+      display: none;
+      margin-top: 18px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 18px;
+    }
+    
+    .hospital-card.selected .doctor-list {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .doctor-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    
+    .doctor-card:hover {
+      background-color: #f8fafc;
+      border-color: #e2e8f0;
+    }
+    
+    .doctor-card.selected {
+      background-color: #f0f9ff;
+      border: 1px solid #bae6fd;
+    }
+    
+    .doctor-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--ast-global-color-1), #93c5fd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 18px;
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+    }
+    
+    .doctor-info {
+      flex: 1;
+    }
+    
+    .doctor-info h4 {
+      margin: 0 0 5px 0;
+      color: #334155;
+      font-size: 1.05rem;
+    }
+    
+    .doctor-info p {
+      margin: 0;
+      font-size: 0.9em;
+      color: #64748b;
+    }
+    
+    .book-btn {
+      padding: 10px 18px;
+      background: linear-gradient(135deg, var(--ast-global-color-1), #2563eb);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+    }
+    
+    .book-btn:hover {
+      background: linear-gradient(135deg, var(--ast-global-color-1), #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    .appointment-form {
+      display: none;
+      margin-top: 20px;
+      grid-column: 1 / span 2;
+      animation: slideUp 0.4s ease;
+    }
+    
+    @keyframes slideUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    .appointment-form.active {
+      display: block;
+    }
+    
+    .form-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .form-header h3 {
+      margin: 0;
+      color: var(--ast-global-color-1); /*#1e40af;*/
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #334155;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+    }
+    
+    .form-group input:focus, 
+    .form-group select:focus, 
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--ast-global-color-1); /*#3b82f6;*/
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      background-color: white;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .cancel-btn {
+      padding: 12px 22px;
+      background-color: white;
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .cancel-btn:hover {
+      background-color: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+    
+    .submit-btn {
+      padding: 12px 25px;
+      background: linear-gradient(135deg, var(--ast-global-color-1), #2563eb);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(37, 99, 235, 0.2);
+    }
+    
+    .submit-btn:hover {
+      background: linear-gradient(135deg, var(--ast-global-color-1), #1d4ed8);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+    
+    .success-msg {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      color: #166534;
+      text-align: center;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .success-msg.active {
+      display: block;
+    }
+    
+    .success-msg h3 {
+      color: #15803d;
+      margin-top: 0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      main {
+        padding: 20px;
+      }
+      
+      .appointments-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .appointments-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .filter-panel {
+        position: relative;
+        top: 0;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .hospital-meta {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  .filter-panel {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.95);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+}
+
+.filter-section h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--ast-global-color-1); /*#1e3a8a;*/
+}
+
+/* Enhanced Hospital Cards */
+.hospital-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.hospital-card:hover {
+  border-color: #bfdbfe;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.08);
+}
+
+/* Modern Form Design */
+.appointment-form {
+  background: linear-gradient(145deg, #f8fafc 0%, #ffffff 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+}
+
+.form-group input, 
+.form-group select, 
+.form-group textarea {
+  background: rgba(255,255,255,0.9);
+  border: 1px solid #e2e8f0;
+}
+
+/* Animated Success Message */
+.success-msg {
+  background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+  border: none;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 12px;
+}
+
+.success-msg::before {
+  content: '✓';
+  font-size: 1.5rem;
+  color: #166534;
+  font-weight: bold;
+}
+
+/* Enhanced Modal */
+.modal-content {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+}
+
+/* Better Responsiveness */
+@media (max-width: 768px) {
+  .appointments-container {
+    gap: 1rem;
+  }
+  
+  .filter-panel {
+    padding: 1.5rem;
+  }
+  
+  .hospital-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Enhanced Interactive Elements */
+button, .btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.book-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+}
+
+/* Navigation Animation */
+header nav li a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+header nav li a:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Improved Checkboxes */
+.filter-options input[type="checkbox"]:checked {
+  background: #3b82f6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") center/12px no-repeat;
+}
+
+/* Gradient Border Animation */
+.hospital-card::before {
+  background: linear-gradient(45deg, var(--ast-global-color-1), #60a5fa);
+  width: 3px;
+}
+
+  </style>
+</head>
+<body>
+  <!-- Navigation Header -->
+  <!--nav>
+  <ul>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/maya">Maya</a></li>
+    <li><a href="/history">History</a></li>
+    <li><a href="/appointments" class="active">Appointments</a></li>
+    <li><a href="/feedback">Feedback</a></li>
+    <li><a href="#" id="logoutBtn">Logout</a></li>
+  </ul>
+</nav-->
+  <header class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+  id="masthead" itemid="#masthead" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+  <div data-toggle-type="dropdown" id="ast-desktop-header">
+    <div class="ast-main-header-wrap main-header-bar-wrap">
+      <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+        data-section="section-primary-header-builder">
+        <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+          data-section="section-primary-header-builder">
+          <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+            <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+              <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+                <div class="site-branding ast-site-identity" itemscope="itemscope"
+                  itemtype="https://schema.org/Organization">
+                  <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                      rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                        height="203" sizes="(max-width: 424px) 100vw, 424px"
+                        src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                        srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                        width="424" /></a></span>
+                </div>
+                <!-- .site-branding -->
+              </div>
+            </div>
+            <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+              <div
+                class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                data-section="section-hb-menu-1">
+                <div class="ast-main-header-bar-alignment">
+                  <div class="main-header-bar-navigation">
+                    <nav aria-label="Site Navigation: Main Menu"
+                      class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                      id="primary-site-navigation-desktop" itemscope="itemscope"
+                      itemtype="https://schema.org/SiteNavigationElement">
+                      <div class="main-navigation ast-inline-flex">
+                        <ul
+                          class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                          id="ast-hf-menu-1">
+                          <li
+                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169"
+                            id="menu-item-1169"><a class="menu-link" href="https://asendhealth.com/">Home</a></li>
+                          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"
+                            id="menu-item-1170"><a class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a>
+                          </li>
+                          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"
+                            id="menu-item-1172"><a class="menu-link"
+                              href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                          <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"
+                            id="menu-item-1171"><a class="menu-link"
+                              href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                        </ul>
+                      </div>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+              <!--div class="ast-builder-layout-element ast-flex site-header-focus-item ast-header-button-1"
+                data-section="section-hb-button-1">
+                <div class="ast-builder-button-wrap ast-builder-button-size-"><a class="ast-custom-button-link"
+                    href="tel:202-555-0188" target="_self">
+                    <div class="ast-custom-button">202-555-0188</div>
+                  </a><a class="menu-link" href="tel:202-555-0188" target="_self">202-555-0188</a></div>
+              </div-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- Main Header Bar Wrap -->
+  <div class="ast-mobile-header-wrap" data-type="dropdown" id="ast-mobile-header">
+    <div class="ast-main-header-wrap main-header-bar-wrap">
+      <div
+        class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item ast-builder-grid-row-layout-default ast-builder-grid-row-tablet-layout-default ast-builder-grid-row-mobile-layout-default"
+        data-section="section-primary-header-builder">
+        <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+          <div class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+            <div class="ast-builder-layout-element ast-flex site-header-focus-item" data-section="title_tagline">
+              <div class="site-branding ast-site-identity" itemscope="itemscope"
+                itemtype="https://schema.org/Organization">
+                <span class="site-logo-img"><a class="custom-logo-link" href="https://asendhealth.com/"
+                    rel="home"><img alt="AsendHealth" class="custom-logo" decoding="async" fetchpriority="high"
+                      height="203" sizes="(max-width: 424px) 100vw, 424px"
+                      src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                      srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                      width="424" /></a></span>
+              </div>
+              <!-- .site-branding -->
+            </div>
+          </div>
+          <div class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+            <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+              data-section="section-header-mobile-trigger">
+              <div class="ast-button-wrap">
+                <button aria-expanded="false"
+                  class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-fill" type="button">
+                  <span class="screen-reader-text">Main Menu</span>
+                  <span class="mobile-menu-toggle-icon">
+                    <span aria-hidden="true" class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                        class="ast-mobile-svg ast-menu2-svg" fill="currentColor" height="28" version="1.1"
+                        viewbox="0 0 24 28" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z">
+                        </path>
+                      </svg></span><span aria-hidden="true"
+                      class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                        class="ast-mobile-svg ast-close-svg" fill="currentColor" height="24" version="1.1"
+                        viewbox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                        </path>
+                      </svg></span> </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ast-mobile-header-content content-align-flex-start">
+      <div
+        class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+        data-section="section-hb-menu-1">
+        <div class="ast-main-header-bar-alignment">
+          <div class="main-header-bar-navigation">
+            <nav aria-label="Site Navigation: Main Menu"
+              class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+              id="primary-site-navigation-mobile" itemscope="itemscope"
+              itemtype="https://schema.org/SiteNavigationElement">
+              <div class="main-navigation ast-inline-flex">
+                <ul
+                  class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                  id="ast-hf-menu-1">
+                  <li
+                    class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                    <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                  </li>
+                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"><a
+                      class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a></li>
+                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"><a
+                      class="menu-link" href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                  <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"><a
+                      class="menu-link" href="http://127.0.0.1:5000/dashboard">Dashboard</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h1>Book an Appointment</h1>
+    <p>Find and book appointments with healthcare providers across India.</p>
+    
+    <div class="appointments-container">
+      <!-- Filter Panel -->
+      <div class="filter-panel">
+        <h2>Filters</h2>
+        
+        <div class="filter-section">
+          <h3>Location</h3>
+          <div class="filter-options">
+            <label for="state-filter">Select State</label>
+            <select id="state-filter" aria-label="Filter by state">
+              <option value="">All States</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Bihar">Bihar</option>
+            </select>
+            
+            <label for="district-filter" class="mt-3">Select District</label>
+            <select id="district-filter" class="mt-3" aria-label="Filter by district">
+              <option value="">All Districts</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <h3>Speciality</h3>
+          <div class="filter-options">
+            <label><input type="checkbox" value="Cardiology"> Cardiology</label>
+            <label><input type="checkbox" value="Neurology"> Neurology</label>
+            <label><input type="checkbox" value="Orthopedics"> Orthopedics</label>
+            <label><input type="checkbox" value="Pediatrics"> Pediatrics</label>
+            <label><input type="checkbox" value="Gynecology"> Gynecology</label>
+            <label><input type="checkbox" value="Dermatology"> Dermatology</label>
+            <label><input type="checkbox" value="Ophthalmology"> Ophthalmology</label>
+            <label><input type="checkbox" value="General Medicine"> General Medicine</label>
+            <label><input type="checkbox" value="Oncology"> Oncology</label>
+            <label><input type="checkbox" value="Urology"> Urology</label>
+            <label><input type="checkbox" value="ENT"> ENT</label>
+            <label><input type="checkbox" value="Psychiatry"> Psychiatry</label>
+            <label><input type="checkbox" value="Dentistry"> Dentistry</label>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <h3>Hospital Type</h3>
+          <div class="filter-options">
+            <label><input type="checkbox" value="Government"> Government</label>
+            <label><input type="checkbox" value="Private"> Private</label>
+            <label><input type="checkbox" value="Multispeciality"> Multispeciality</label>
+            <label><input type="checkbox" value="Specialty"> Specialty</label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Appointments List -->
+      <div class="appointments-list" id="hospitals-container">
+        <!-- Hospital cards will be generated here -->
+      </div>
+      
+      <!-- Appointment Form -->
+      <div class="appointment-form" id="appointment-form">
+        <div class="form-header">
+          <h3>Book Your Appointment</h3>
+          <button class="cancel-btn" id="cancel-form">Cancel</button>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="patient-name">Your Name</label>
+            <input type="text" id="patient-name" placeholder="Enter your full name">
+          </div>
+          
+          <div class="form-group">
+            <label for="patient-phone">Phone Number</label>
+            <input type="tel" id="patient-phone" placeholder="Enter your phone number">
+          </div>
+          
+          <div class="form-group">
+            <label for="appointment-date">Preferred Date</label>
+            <input type="date" id="appointment-date">
+          </div>
+          
+          <div class="form-group">
+            <label for="appointment-time">Preferred Time</label>
+            <select id="appointment-time">
+              <option value="">Select a time slot</option>
+              <option value="09:00 AM">09:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="02:00 PM">02:00 PM</option>
+              <option value="03:00 PM">03:00 PM</option>
+              <option value="04:00 PM">04:00 PM</option>
+              <option value="05:00 PM">05:00 PM</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="appointment-notes">Reason for Visit</label>
+          <textarea id="appointment-notes" rows="3" placeholder="Briefly describe your symptoms or reason for the appointment"></textarea>
+        </div>
+        
+        <div class="form-actions">
+          <button class="submit-btn" id="book-appointment">Book Appointment</button>
+        </div>
+      </div>
+      
+      <div class="success-msg" id="success-message">
+        <h3>Appointment Booked Successfully!</h3>
+        <p>Your appointment has been confirmed. You will receive a confirmation message shortly.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Appointment Form Modal -->
+  <div id="appointmentFormModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="form-header">
+        <h3>Book Your Appointment</h3>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="patient-name">Your Name</label>
+          <input type="text" id="patient-name" placeholder="Enter your full name">
+        </div>
+        
+        <div class="form-group">
+          <label for="patient-phone">Phone Number</label>
+          <input type="tel" id="patient-phone" placeholder="Enter your phone number">
+        </div>
+        
+        <div class="form-group">
+          <label for="appointment-date">Preferred Date</label>
+          <input type="date" id="appointment-date">
+        </div>
+        
+        <div class="form-group">
+          <label for="appointment-time">Preferred Time</label>
+          <select id="appointment-time">
+            <option value="">Select a time slot</option>
+            <option value="09:00 AM">09:00 AM</option>
+            <option value="10:00 AM">10:00 AM</option>
+            <option value="11:00 AM">11:00 AM</option>
+            <option value="12:00 PM">12:00 PM</option>
+            <option value="02:00 PM">02:00 PM</option>
+            <option value="03:00 PM">03:00 PM</option>
+            <option value="04:00 PM">04:00 PM</option>
+            <option value="05:00 PM">05:00 PM</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="appointment-notes">Reason for Visit</label>
+        <textarea id="appointment-notes" rows="3" placeholder="Briefly describe your symptoms or reason for the appointment"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button class="cancel-btn" id="cancel-form">Cancel</button>
+        <button class="submit-btn" id="book-appointment">Book Appointment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content success-content">
+      <span class="close-modal">&times;</span>
+      <h3>Appointment Booked Successfully!</h3>
+      <p>Your appointment has been confirmed. You will receive a confirmation message shortly.</p>
+      <button class="submit-btn" id="book-another">Book Another Appointment</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Check if user is logged in
+      const pointId = localStorage.getItem("pointId");
+      if (!pointId) {
+        window.location.href = "/login";
+        return;
+      }
+
+      // Logout functionality
+      document.getElementById("logoutBtn").addEventListener("click", function(e) {
+        e.preventDefault();
+        localStorage.removeItem("pointId");
+        localStorage.removeItem("patientGuid");
+        window.location.href = "/login";
+      });
+
+      // Define districts by state
+      const districtsByState = {
+        "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South West Delhi", "West Delhi"],
+        "Maharashtra": ["Mumbai City", "Mumbai Suburban", "Pune", "Nagpur", "Thane", "Nashik", "Aurangabad", "Solapur", "Amravati", "Kolhapur"],
+        "Karnataka": ["Bangalore Urban", "Mysore", "Manglore", "Gulbarga", "Tumkur", "Belgaum", "Davanagere", "Dharwad", "Raichur", "Bellary", "Bijapur"],
+        "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Tiruppur", "Erode", "Vellore", "Thoothukkudi"],
+        "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Anand", "Bharuch"],
+        "West Bengal": ["Kolkata", "Howrah", "North 24 Parganas", "South 24 Parganas", "Hooghly", "Bardhaman", "Midnapore East", "Midnapore West", "Murshidabad", "Nadia"],
+        "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Mahbubnagar", "Adilabad", "Medak", "Nalgonda", "Rangareddy"],
+        "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Alappuzha", "Palakkad", "Kannur", "Kottayam", "Malappuram"],
+        "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Meerut", "Varanasi", "Allahabad", "Bareilly", "Aligarh", "Moradabad"],
+        "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Ajmer", "Bikaner", "Bharatpur", "Sikar", "Alwar", "Bhilwara"],
+        "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Rajahmundry", "Tirupati", "Kakinada", "Anantapur", "Eluru"],
+        "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Hoshiarpur", "Mohali", "Pathankot", "Moga", "Firozpur"],
+        "Haryana": ["Gurugram", "Faridabad", "Hisar", "Rohtak", "Panipat", "Karnal", "Ambala", "Yamunanagar", "Sonipat", "Panchkula"],
+        "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Darbhanga", "Arrah", "Begusarai", "Chhapra", "Katihar", "Munger"]
+      };
+      
+      // Specialty ratings for hospitals (to show best hospitals in each specialty)
+      const specialtyRatings = {
+        "Cardiology": [1, 2, 4, 5, 7], // Hospital IDs that excel in this specialty
+        "Neurology": [1, 3, 4, 8],
+        "Orthopedics": [1, 3, 5],
+        "Pediatrics": [2, 6],
+        "Gynecology": [2, 5],
+        "Dermatology": [2, 6],
+        "Ophthalmology": [6, 9, 10],
+        "General Medicine": [3, 5, 6],
+        "Oncology": [1, 3, 9, 11],
+        "Urology": [4, 9, 11],
+        "ENT": [6, 7, 10],
+        "Psychiatry": [8, 11],
+        "Dentistry": [5, 7, 10]
+      };
+
+      // Sample data for hospitals in India
+      const hospitals = [
+        {
+          id: 1,
+          name: "AIIMS Delhi",
+          location: "New Delhi, Delhi",
+          district: "New Delhi",
+          state: "Delhi",
+          type: "Government",
+          specialties: ["Cardiology", "Neurology", "Oncology", "Orthopedics"],
+          rating: 4.7,
+          doctors: [
+            {
+              id: 101,
+              name: "Dr. Rajesh Kumar",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "15 years"
+            },
+            {
+              id: 102,
+              name: "Dr. Sunita Sharma",
+              specialty: "Neurology",
+              qualification: "MD, DM Neurology",
+              experience: "12 years"
+            },
+            {
+              id: 103,
+              name: "Dr. Amit Patel",
+              specialty: "Orthopedics",
+              qualification: "MS Orthopedics",
+              experience: "10 years"
+            }
+          ]
+        },
+        {
+          id: 2,
+          name: "Fortis Hospital",
+          location: "Mumbai City, Maharashtra",
+          district: "Mumbai City",
+          state: "Maharashtra",
+          type: "Private",
+          specialties: ["Cardiology", "Gynecology", "Pediatrics", "Dermatology"],
+          rating: 4.5,
+          doctors: [
+            {
+              id: 201,
+              name: "Dr. Priya Mehta",
+              specialty: "Gynecology",
+              qualification: "MD, DNB Gynecology",
+              experience: "18 years"
+            },
+            {
+              id: 202,
+              name: "Dr. Rahul Gupta",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "14 years"
+            },
+            {
+              id: 203,
+              name: "Dr. Ananya Sen",
+              specialty: "Pediatrics",
+              qualification: "MD Pediatrics",
+              experience: "9 years"
+            }
+          ]
+        },
+        {
+          id: 3,
+          name: "Apollo Hospitals",
+          location: "Bangalore Urban, Karnataka",
+          district: "Bangalore Urban",
+          state: "Karnataka",
+          type: "Private",
+          specialties: ["Oncology", "Neurology", "Orthopedics", "General Medicine"],
+          rating: 4.6,
+          doctors: [
+            {
+              id: 301,
+              name: "Dr. Vikram Reddy",
+              specialty: "Oncology",
+              qualification: "MD, DM Oncology",
+              experience: "20 years"
+            },
+            {
+              id: 302,
+              name: "Dr. Aisha Khan",
+              specialty: "Neurology",
+              qualification: "MD, DM Neurology",
+              experience: "15 years"
+            },
+            {
+              id: 303,
+              name: "Dr. Karthik Rao",
+              specialty: "Orthopedics",
+              qualification: "MS Orthopedics",
+              experience: "12 years"
+            }
+          ]
+        },
+        {
+          id: 4,
+          name: "Medanta - The Medicity",
+          location: "Gurugram, Haryana",
+          district: "Gurugram",
+          state: "Haryana",
+          type: "Multispeciality",
+          specialties: ["Cardiology", "Neurology", "Gastroenterology", "Nephrology", "Urology"],
+          rating: 4.8,
+          doctors: [
+            {
+              id: 401,
+              name: "Dr. Naresh Trehan",
+              specialty: "Cardiology",
+              qualification: "MD, MS Cardiac Surgery",
+              experience: "40 years"
+            },
+            {
+              id: 402,
+              name: "Dr. Sanjay Sharma",
+              specialty: "Neurology",
+              qualification: "MD, DM Neurology",
+              experience: "22 years"
+            },
+            {
+              id: 403,
+              name: "Dr. Ritu Verma",
+              specialty: "Gastroenterology",
+              qualification: "MD, DM Gastroenterology",
+              experience: "18 years"
+            }
+          ]
+        },
+        {
+          id: 5,
+          name: "Christian Medical College",
+          location: "Vellore, Tamil Nadu",
+          district: "Vellore",
+          state: "Tamil Nadu",
+          type: "Private",
+          specialties: ["Cardiology", "Orthopedics", "Nephrology", "General Medicine", "Dentistry"],
+          rating: 4.7,
+          doctors: [
+            {
+              id: 501,
+              name: "Dr. John Thomas",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "25 years"
+            },
+            {
+              id: 502,
+              name: "Dr. Maya Sundaram",
+              specialty: "Nephrology",
+              qualification: "MD, DM Nephrology",
+              experience: "16 years"
+            },
+            {
+              id: 503,
+              name: "Dr. Samuel Johnson",
+              specialty: "Orthopedics",
+              qualification: "MS Orthopedics",
+              experience: "14 years"
+            }
+          ]
+        },
+        {
+          id: 6,
+          name: "KEM Hospital",
+          location: "Mumbai City, Maharashtra",
+          district: "Mumbai City",
+          state: "Maharashtra",
+          type: "Government",
+          specialties: ["General Medicine", "Pediatrics", "Dermatology", "Ophthalmology", "ENT"],
+          rating: 4.3,
+          doctors: [
+            {
+              id: 601,
+              name: "Dr. Pradeep Sharma",
+              specialty: "General Medicine",
+              qualification: "MD General Medicine",
+              experience: "12 years"
+            },
+            {
+              id: 602,
+              name: "Dr. Neha Desai",
+              specialty: "Pediatrics",
+              qualification: "MD Pediatrics",
+              experience: "8 years"
+            },
+            {
+              id: 603,
+              name: "Dr. Rohan Khanna",
+              specialty: "Dermatology",
+              qualification: "MD Dermatology",
+              experience: "10 years"
+            }
+          ]
+        },
+        {
+          id: 7,
+          name: "Narayana Hrudayalaya",
+          location: "Bangalore Urban, Karnataka",
+          district: "Bangalore Urban",
+          state: "Karnataka",
+          type: "Specialty",
+          specialties: ["Cardiology", "Cardiac Surgery", "ENT", "Dentistry"],
+          rating: 4.9,
+          doctors: [
+            {
+              id: 701,
+              name: "Dr. Devi Shetty",
+              specialty: "Cardiac Surgery",
+              qualification: "MCh Cardiac Surgery",
+              experience: "35 years"
+            },
+            {
+              id: 702,
+              name: "Dr. Rahul Mehta",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "18 years"
+            },
+            {
+              id: 703,
+              name: "Dr. Priya Nair",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "15 years"
+            }
+          ]
+        },
+        {
+          id: 8,
+          name: "NIMHANS",
+          location: "Bangalore Urban, Karnataka",
+          district: "Bangalore Urban",
+          state: "Karnataka",
+          type: "Government",
+          specialties: ["Neurology", "Psychiatry", "Neurosurgery"],
+          rating: 4.6,
+          doctors: [
+            {
+              id: 801,
+              name: "Dr. Rajesh Sagar",
+              specialty: "Psychiatry",
+              qualification: "MD Psychiatry",
+              experience: "20 years"
+            },
+            {
+              id: 802,
+              name: "Dr. Madhuri Behari",
+              specialty: "Neurology",
+              qualification: "MD, DM Neurology",
+              experience: "22 years"
+            },
+            {
+              id: 803,
+              name: "Dr. Sanjay Behari",
+              specialty: "Neurosurgery",
+              qualification: "MCh Neurosurgery",
+              experience: "25 years"
+            }
+          ]
+        },
+        {
+          id: 9,
+          name: "Tata Memorial Hospital",
+          location: "Mumbai City, Maharashtra",
+          district: "Mumbai City",
+          state: "Maharashtra",
+          type: "Specialty",
+          specialties: ["Oncology", "Urology", "Ophthalmology"],
+          rating: 4.8,
+          doctors: [
+            {
+              id: 901,
+              name: "Dr. Rajendra Badwe",
+              specialty: "Oncology",
+              qualification: "MS, MCh Oncology",
+              experience: "30 years"
+            },
+            {
+              id: 902,
+              name: "Dr. Shyam Aggarwal",
+              specialty: "Oncology",
+              qualification: "MD, DM Oncology",
+              experience: "25 years"
+            },
+            {
+              id: 903,
+              name: "Dr. Sudeep Gupta",
+              specialty: "Oncology",
+              qualification: "MD, DM Oncology",
+              experience: "20 years"
+            }
+          ]
+        },
+        {
+          id: 10,
+          name: "Sankara Nethralaya",
+          location: "Chennai, Tamil Nadu",
+          district: "Chennai",
+          state: "Tamil Nadu",
+          type: "Specialty",
+          specialties: ["Ophthalmology", "ENT", "Dentistry"],
+          rating: 4.7,
+          doctors: [
+            {
+              id: 1001,
+              name: "Dr. S. S. Badrinath",
+              specialty: "Ophthalmology",
+              qualification: "MD, FRCS Ophthalmology",
+              experience: "45 years"
+            },
+            {
+              id: 1002,
+              name: "Dr. Lingam Gopal",
+              specialty: "Ophthalmology",
+              qualification: "MD Ophthalmology",
+              experience: "30 years"
+            },
+            {
+              id: 1003,
+              name: "Dr. Tarun Sharma",
+              specialty: "Ophthalmology",
+              qualification: "MD Ophthalmology",
+              experience: "25 years"
+            }
+          ]
+        },
+        {
+          id: 11,
+          name: "Max Super Speciality Hospital",
+          location: "New Delhi, Delhi",
+          district: "South Delhi",
+          state: "Delhi",
+          type: "Private",
+          specialties: ["Oncology", "Urology", "Psychiatry"],
+          rating: 4.6,
+          doctors: [
+            {
+              id: 1101,
+              name: "Dr. Harit Chaturvedi",
+              specialty: "Oncology",
+              qualification: "MS, MCh Oncology",
+              experience: "35 years"
+            },
+            {
+              id: 1102,
+              name: "Dr. Anant Kumar",
+              specialty: "Urology",
+              qualification: "MS, MCh Urology",
+              experience: "25 years"
+            },
+            {
+              id: 1103,
+              name: "Dr. Sameer Malhotra",
+              specialty: "Psychiatry",
+              qualification: "MD Psychiatry",
+              experience: "20 years"
+            }
+          ]
+        },
+        {
+          id: 12,
+          name: "Lilavati Hospital",
+          location: "Mumbai Suburban, Maharashtra",
+          district: "Mumbai Suburban",
+          state: "Maharashtra",
+          type: "Private",
+          specialties: ["Cardiology", "Neurology", "Orthopedics"],
+          rating: 4.5,
+          doctors: [
+            {
+              id: 1201,
+              name: "Dr. Sudhir Nair",
+              specialty: "Cardiology",
+              qualification: "MD, DM Cardiology",
+              experience: "30 years"
+            },
+            {
+              id: 1202,
+              name: "Dr. Nitin Dange",
+              specialty: "Neurology",
+              qualification: "MD, DM Neurology",
+              experience: "25 years"
+            },
+            {
+              id: 1203,
+              name: "Dr. Dinshaw Pardiwala",
+              specialty: "Orthopedics",
+              qualification: "MS Orthopedics",
+              experience: "20 years"
+            }
+          ]
+        }
+      ];
+
+      const hospitalsContainer = document.getElementById('hospitals-container');
+      const appointmentForm = document.getElementById('appointment-form');
+      const successMessage = document.getElementById('success-message');
+      const cancelFormBtn = document.getElementById('cancel-form');
+      const bookAppointmentBtn = document.getElementById('book-appointment');
+      const stateFilter = document.getElementById('state-filter');
+      const districtFilter = document.getElementById('district-filter');
+      let selectedDoctor = null;
+      let selectedHospital = null;
+
+      // Update districts based on state selection
+      stateFilter.addEventListener('change', function() {
+        const selectedState = this.value;
+        const districts = selectedState ? districtsByState[selectedState] || [] : [];
+        
+        // Clear current districts
+        districtFilter.innerHTML = '<option value="">All Districts</option>';
+        
+        // Add new districts
+        districts.forEach(district => {
+          const option = document.createElement('option');
+          option.value = district;
+          option.textContent = district;
+          districtFilter.appendChild(option);
+        });
+        
+        // Trigger filters
+        applyFilters();
+      });
+
+      // Render hospitals with optional highlight for best in specialty
+      function renderHospitals(hospitalsList, bestSpecialties = []) {
+        hospitalsContainer.innerHTML = '';
+        
+        if (hospitalsList.length === 0) {
+          hospitalsContainer.innerHTML = '<p>No hospitals match your filters. Please try different filter options.</p>';
+          return;
+        }
+        
+        hospitalsList.forEach(hospital => {
+          const hospitalCard = document.createElement('div');
+          hospitalCard.className = 'hospital-card';
+          hospitalCard.setAttribute('data-id', hospital.id);
+          
+          // Check if hospital is best in any of the selected specialties
+          const isBestInSpecialty = bestSpecialties.some(specialty => 
+            specialtyRatings[specialty] && specialtyRatings[specialty].includes(hospital.id)
+          );
+          
+          if (isBestInSpecialty) {
+            hospitalCard.classList.add('best-in-specialty');
+          }
+          
+          const specialtiesText = hospital.specialties.slice(0, 3).join(', ') + 
+            (hospital.specialties.length > 3 ? '...' : '');
+          
+          // Determine which specialties this hospital is best at (for highlighting)
+          const bestAt = [];
+          if (bestSpecialties.length > 0) {
+            bestSpecialties.forEach(specialty => {
+              if (specialtyRatings[specialty] && specialtyRatings[specialty].includes(hospital.id)) {
+                bestAt.push(specialty);
+              }
+            });
+          }
+          
+          const bestSpecialtyBadge = bestAt.length > 0 ? 
+            `<div class="best-specialty-badge">Top Rated for: ${bestAt.join(', ')}</div>` : '';
+          
+          hospitalCard.innerHTML = `
+            <h3>${hospital.name}</h3>
+            ${bestSpecialtyBadge}
+            <div class="hospital-meta">
+              <span><i class="fas fa-map-marker-alt"></i> ${hospital.location}</span>
+              <span><i class="fas fa-hospital"></i> ${hospital.type}</span>
+              <span><i class="fas fa-star"></i> ${hospital.rating}</span>
+            </div>
+            <p>Specialties: ${specialtiesText}</p>
+            <button class="book-btn show-doctors">View Doctors</button>
+            
+            <div class="doctor-list">
+              ${hospital.doctors.map(doctor => `
+                <div class="doctor-card" data-id="${doctor.id}">
+                  <div class="doctor-avatar">${doctor.name.charAt(0)}</div>
+                  <div class="doctor-info">
+                    <h4>${doctor.name}</h4>
+                    <p>${doctor.specialty} | ${doctor.experience} experience</p>
+                    <p>${doctor.qualification}</p>
+                  </div>
+                  <button class="book-btn select-doctor">Book</button>
+                </div>
+              `).join('')}
+            </div>
+          `;
+          
+          hospitalsContainer.appendChild(hospitalCard);
+        });
+        
+        // Event listeners for hospital and doctor selection
+        document.querySelectorAll('.show-doctors').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const card = this.closest('.hospital-card');
+            
+            // Deselect all other hospitals
+            document.querySelectorAll('.hospital-card').forEach(c => {
+              if (c !== card) c.classList.remove('selected');
+            });
+            
+            // Toggle selected state for this hospital
+            card.classList.toggle('selected');
+            
+            // Update selected hospital
+            if (card.classList.contains('selected')) {
+              selectedHospital = hospitals.find(h => h.id === parseInt(card.getAttribute('data-id')));
+            } else {
+              selectedHospital = null;
+            }
+          });
+        });
+        
+        document.querySelectorAll('.select-doctor').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const doctorCard = this.closest('.doctor-card');
+            const hospitalCard = doctorCard.closest('.hospital-card');
+            
+            // Deselect all other doctors
+            document.querySelectorAll('.doctor-card').forEach(c => {
+              c.classList.remove('selected');
+            });
+            
+            // Select this doctor
+            doctorCard.classList.add('selected');
+            
+            // Update selected doctor and hospital
+            const hospitalId = parseInt(hospitalCard.getAttribute('data-id'));
+            const doctorId = parseInt(doctorCard.getAttribute('data-id'));
+            
+            selectedHospital = hospitals.find(h => h.id === hospitalId);
+            selectedDoctor = selectedHospital.doctors.find(d => d.id === doctorId);
+            
+            // Reset form fields
+            document.getElementById('patient-name').value = '';
+            document.getElementById('patient-phone').value = '';
+            document.getElementById('appointment-date').value = '';
+            document.getElementById('appointment-time').value = '';
+            document.getElementById('appointment-notes').value = '';
+            
+            // Open the form modal
+            openFormModal();
+          });
+        });
+      }
+      
+      // Filter functionality
+      function applyFilters() {
+        const state = stateFilter.value;
+        const district = districtFilter.value;
+        const specialtyFilters = Array.from(document.querySelectorAll('.filter-options input[type="checkbox"]:checked'))
+          .map(cb => cb.value);
+        const typeFilters = Array.from(document.querySelectorAll('.filter-section:nth-child(3) input[type="checkbox"]:checked'))
+          .map(cb => cb.value);
+        
+        let filteredHospitals = [...hospitals];
+        
+        // Apply state filter
+        if (state) {
+          filteredHospitals = filteredHospitals.filter(hospital => 
+            hospital.state === state
+          );
+        }
+        
+        // Apply district filter
+        if (district) {
+          filteredHospitals = filteredHospitals.filter(hospital => 
+            hospital.district === district
+          );
+        }
+        
+        // Apply specialty filters
+        if (specialtyFilters.length > 0) {
+          filteredHospitals = filteredHospitals.filter(hospital => 
+            hospital.specialties.some(specialty => specialtyFilters.includes(specialty))
+          );
+          
+          // Sort filtered hospitals to put best-in-specialty first
+          filteredHospitals.sort((a, b) => {
+            const aIsBest = specialtyFilters.some(specialty => 
+              specialtyRatings[specialty] && specialtyRatings[specialty].includes(a.id)
+            );
+            
+            const bIsBest = specialtyFilters.some(specialty => 
+              specialtyRatings[specialty] && specialtyRatings[specialty].includes(b.id)
+            );
+            
+            if (aIsBest && !bIsBest) return -1;
+            if (!aIsBest && bIsBest) return 1;
+            return 0;
+          });
+        }
+        
+        // Apply type filters
+        if (typeFilters.length > 0) {
+          filteredHospitals = filteredHospitals.filter(hospital => 
+            typeFilters.includes(hospital.type)
+          );
+        }
+        
+        // Render with best specialty highlighting
+        renderHospitals(filteredHospitals, specialtyFilters);
+      }
+      
+      // Initialize with all hospitals
+      renderHospitals(hospitals);
+      
+      // Add event listeners for filters
+      stateFilter.addEventListener('change', applyFilters);
+      districtFilter.addEventListener('change', applyFilters);
+      document.querySelectorAll('.filter-options input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', applyFilters);
+      });
+      
+      // Update JavaScript to handle the modals
+      const formModal = document.getElementById("appointmentFormModal");
+      const successModal = document.getElementById("successModal");
+      const closeBtns = document.querySelectorAll(".close-modal");
+      const bookAnotherBtn = document.getElementById("book-another");
+      
+      function openFormModal() {
+        formModal.classList.add("show");
+        document.body.style.overflow = "hidden"; // Prevent scrolling behind modal
+      }
+      
+      function closeFormModal() {
+        formModal.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+      
+      function openSuccessModal() {
+        successModal.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+      
+      function closeSuccessModal() {
+        successModal.classList.remove("show");
+        document.body.style.overflow = "";
+      }
+      
+      // Close modals when clicking the X
+      closeBtns.forEach(btn => {
+        btn.addEventListener("click", function() {
+          closeFormModal();
+          closeSuccessModal();
+        });
+      });
+      
+      // Close modals when clicking outside the content
+      window.addEventListener("click", function(event) {
+        if (event.target === formModal) {
+          closeFormModal();
+        }
+        if (event.target === successModal) {
+          closeSuccessModal();
+        }
+      });
+
+      // Cancel form
+      cancelFormBtn.addEventListener('click', function() {
+        closeFormModal();
+      });
+      
+      // Book appointment
+      bookAppointmentBtn.addEventListener('click', function() {
+        const patientName = document.getElementById('patient-name').value;
+        const patientPhone = document.getElementById('patient-phone').value;
+        const appointmentDate = document.getElementById('appointment-date').value;
+        const appointmentTime = document.getElementById('appointment-time').value;
+        
+        if (!patientName || !patientPhone || !appointmentDate || !appointmentTime) {
+          alert('Please fill in all required fields');
+          return;
+        }
+        
+        // Close form and show success message
+        closeFormModal();
+        openSuccessModal();
+      });
+      
+      // Book another appointment
+      bookAnotherBtn.addEventListener('click', function() {
+        closeSuccessModal();
+      });
+    });
+  </script>
+  
+  <style>
+    /* Additional styles for the new features */
+    .mt-3 {
+      margin-top: 15px;
+    }
+    
+    .best-in-specialty {
+      border-left: 4px solid #68d391 !important;
+      background-color: #f0fff4;
+    }
+    
+    .best-specialty-badge {
+      display: inline-block;
+      background-color: #68d391;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s;
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: auto;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 800px;
+      position: relative;
+      animation: slideDown 0.4s;
+    }
+
+    .success-content {
+      text-align: center;
+      padding: 40px;
+      max-width: 500px;
+    }
+
+    .success-content h3 {
+      color: #15803d;
+      font-size: 1.5rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: #94a3b8;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .close-modal:hover {
+      color: #475569;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0}
+      to {opacity: 1}
+    }
+
+    @keyframes slideDown {
+      from {transform: translateY(-50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
+  </style>
+</body>
+</html> 
