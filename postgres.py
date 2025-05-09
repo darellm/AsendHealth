@@ -171,6 +171,40 @@ def delete_location(location_id):
 # DOCTOR FUNCTIONS
 #####################
 
+# AUTHENTICATE: Validate a doctor's username and password
+#def validate_user(userType, username, password):
+def validate_doctor(username, password):
+    # IMPORTANT: Implement proper password hashing and verification here!
+    # This example uses plain text passwords, which is INSECURE.
+    # Use libraries like passlib or werkzeug.security for hashing.
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        #query = "SELECT * FROM %s WHERE username = %s AND password = %s"
+        query = "SELECT * FROM doctors WHERE username = %s AND password = %s"
+        logging.info(query)
+        cur.execute(query, (username, password))
+        user_data = cur.fetchone()
+        if user_data:
+            logging.info(f"User {username} authenticated successfully.")
+            return user_data # Return patient_id on success
+            # stored_password = user_data[1]
+            # Replace this with a proper hash check:
+            # from werkzeug.security import check_password_hash
+            # if check_password_hash(stored_password, password):
+            # if stored_password == password: # INSECURE - REPLACE
+            #     logging.info(f"User {username} authenticated successfully.")
+            #     return user_data[0] # Return patient_id on success
+        else:
+            logging.warning(f"Authentication failed for user {username}: User not found or incorrect password provided")
+            return None
+    except Exception as e:
+        logging.error(f"An error occurred during authentication: {e}")
+        return None
+    finally:
+        cur.close()
+        conn.close()
+
 # CREATE: Insert a new doctor record (no hospital_id)
 def create_doctor(first_name, last_name, specialization=None,
                  experience_years=None, qualifications=None):
@@ -408,7 +442,7 @@ def delete_doctor(doctor_id):
 
 # AUTHENTICATE: Validate a patient's username and password
 #def validate_user(userType, username, password):
-def validate_user(username, password):
+def validate_patient(username, password):
     # IMPORTANT: Implement proper password hashing and verification here!
     # This example uses plain text passwords, which is INSECURE.
     # Use libraries like passlib or werkzeug.security for hashing.

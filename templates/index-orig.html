@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1" name="viewport" />
   <link href="https://gmpg.org/xfn/11" rel="profile" />
-  <title>AsendHealth - Login</title>
+  <title>AsendHealth</title>
   <!--meta content="max-image-preview:large" name="robots" /-->
   <link href="//fonts.googleapis.com" rel="dns-prefetch" />
   <!--link href="https://asendhealth.com/feed/" rel="alternate" title="AsendHealth » Feed" type="application/rss+xml">
@@ -251,15 +251,10 @@ flexibility(document.documentElement);
                       <p>Please log in to access your services</p>
                       </br>
                       <form id="login-form">
-                        <select id="userType" name="userType" required="True" style="display:block; margin-bottom:10px; width: 250px; height: 40px; padding:10px; border:1px solid #e0e0e0; border-radius:4px;">
-                          <option value="">Select User Type</option>
-                          <option value="provider">Provider</option>
-                          <option value="patient">Patient</option>
-                        </select>
                         <!--label for="username">Username</label-->
-                        <input id="username" name="username" required="True" style="display:block; margin-bottom:10px; width:250px; height: 40px; padding:10px; border-radius:4px;" type="text" placeholder="Username"/>
+                        <input id="username" name="username" required="True" style="display:block; margin-bottom:10px;" type="text" placeholder="Username"/>
                         <!--label for="password">Password</label-->
-                        <input id="password" name="password" required="True" style="display:block; margin-bottom:10px; width:250px; height: 40px; padding:10px; border-radius:4px;" type="password" placeholder="Password"/>
+                        <input id="password" name="password" required="True" style="display:block; margin-bottom:10px;" type="password" placeholder="Password"/>
                         <button style="display:block; margin-bottom:10px;" type="submit">Login</button>
                         <a href="/forgot-password" style="display:block; margin-bottom:5px;">Trouble logging in?</a>
                         <a href="/register" style="display:block;">Need an account?</a>
@@ -270,7 +265,6 @@ flexibility(document.documentElement);
                   <script>
                     document.getElementById("login-form").addEventListener("submit", async function (e) {
                       e.preventDefault();
-                      const userType = document.getElementById("userType").value;
                       const username = document.getElementById("username").value;
                       const password = document.getElementById("password").value; // password is treated as the GUID
 
@@ -278,7 +272,7 @@ flexibility(document.documentElement);
                         const response = await fetch("/api/login", {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ userType, username, password })
+                          body: JSON.stringify({ username, password })
                         });
 
                         if (response.ok) {
@@ -288,7 +282,6 @@ flexibility(document.documentElement);
                             localStorage.setItem("pointId", data.point_id);
                           }
                           localStorage.setItem("patientGuid", data.guid || password);
-                          localStorage.setItem("userType", userType);
                           window.location.href = "/areya";
                         } else {
                           const error = await response.json();

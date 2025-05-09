@@ -45,14 +45,13 @@ def history():
 @app.route("/api/login", methods=["POST"])
 def api_login():
     data = request.get_json()
-    userType = "patients"
+    userType = data.get("userType")
     username = data.get("username")
     password = data.get("password")  
-    if username and password:
-        #result = postgres.validate_user(userType, username, password)
-        result = postgres.validate_user(username, password)
+    if username and password and userType == "patient":
+        result = postgres.validate_patient(username, password)
         if result is not None:
-
+            print("Patient login successful!", result)
             # Process patient data from postgres
             patient_GUID = str(result[20])
             patient_name = result[0] + " " + result[1]
@@ -81,7 +80,26 @@ def api_login():
                     points = result.get("result", {}).get("points", [])
                     if points:
                         point_id = points[0]['id']  # Store the point ID
-                        return jsonify({"guid": password, "point_id": point_id})
+                        
+                        # Create response object
+                        response = jsonify({"guid": password, "point_id": point_id})
+                        
+                        # Set secure cookie with user info
+                        cookie_value = json.dumps({
+                            "username": username,
+                            "userType": userType,
+                            "point_id": point_id  
+                        })
+                        response.set_cookie(
+                            'asendhealth',
+                            cookie_value,
+                            max_age=604800,  # 7 days
+                            secure=False,     # Only sent over HTTPS
+                            httponly=True,   # Not accessible via JavaScript
+                            samesite='Strict' # Prevent CSRF
+                        )
+                        
+                        return response
                     else:
                         return jsonify({"message": "Patient record not found"}), 404
                 else:
@@ -93,6 +111,33 @@ def api_login():
                 return jsonify({"message": str(e)}), 500
         else:
             print("Invalid username or password!")
+            return jsonify({"message": "Invalid credentials"}), 400
+        
+    elif username and password and userType == "provider":
+        # Needs to be implemented
+        result = postgres.validate_doctor(username, password)
+        if result is not None:
+            print("Provider login successful!")
+            response = jsonify({"message": "Provider login successful!"})
+            
+            # Set secure cookie with user info
+            cookie_value = json.dumps({
+                "username": username,
+                "userType": userType
+            })
+            response.set_cookie(
+                'asendhealth',
+                cookie_value,
+                max_age=604800,  # 7 days
+                secure=False,     # Only sent over HTTPS
+                httponly=True,   # Not accessible via JavaScript
+                samesite='Strict' # Prevent CSRF
+            )
+            
+            return response
+        else:
+            print("Invalid username or password!")
+            return jsonify({"message": "Invalid credentials"}), 400
     else:
         print("Invalid username or password!")
         return jsonify({"message": "Invalid credentials"}), 400
