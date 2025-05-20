@@ -52,7 +52,7 @@ class MayaAgent:
         # Try to initialize the LLM with error handling
         try:
             self.llm = OllamaLLM(
-            model="deepseek-r1:7b",
+            model="gemma3:4b",
             base_url="http://localhost:11434",
                 temperature=0.7,
                 streaming=False  # Disable streaming to get the complete response at once
@@ -835,6 +835,8 @@ Format your responses exactly as follows:
 
             # For standard medical queries in simple mode, use a clearer prompt template
             if not deep_research_mode:
+
+                    
                 prompt = (
                     "You are Maya, a medical AI assistant answering a simple medical question. "
                     f"The user asked: '{user_input}'\n\n"
@@ -880,8 +882,8 @@ Format your responses exactly as follows:
             # Make direct API call to Ollama
             try:
                 headers = {"Content-Type": "application/json"}
-                request_data = {
-                    "model": "deepseek-r1:7b",
+                request_data = {    
+                    "model": "gemma3:4b",
                     "prompt": prompt,
                     "stream": False,
                     "temperature": 0.7,
@@ -968,7 +970,7 @@ Format your responses exactly as follows:
                 emergency_response = requests.post(
                     "http://localhost:11434/api/chat",
                     json={
-                        "model": "deepseek-r1:7b",
+                        "model": "gemma3:4b",
                         "messages": [
                             {
                                 "role": "system", 

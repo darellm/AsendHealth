@@ -11,6 +11,7 @@ import asyncio
 
 load_dotenv()  # Load variables from .env
 app = Flask(__name__, template_folder="templates", static_folder="static")
+app.debug = True
 
 # Existing Routes
 @app.route("/")
@@ -95,7 +96,7 @@ def api_login():
                             cookie_value,
                             max_age=604800,  # 7 days
                             secure=False,     # Only sent over HTTPS
-                            httponly=True,   # Not accessible via JavaScript
+                            httponly=False,   # Allow JavaScript access
                             samesite='Strict' # Prevent CSRF
                         )
                         
@@ -130,7 +131,7 @@ def api_login():
                 cookie_value,
                 max_age=604800,  # 7 days
                 secure=False,     # Only sent over HTTPS
-                httponly=True,   # Not accessible via JavaScript
+                httponly=False,   # Allow JavaScript access
                 samesite='Strict' # Prevent CSRF
             )
             

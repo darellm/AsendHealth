@@ -24,43 +24,173 @@
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <style>
+    .options-bar {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .toggle-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toggle-option span {
+      font-size: 14px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* Switch styling */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+  
   <!-- Add debugging tools -->
-  <script src="{{ url_for('static', filename='js/maya_chat.js') }}"></script>
+  <!--script src="{{ url_for('static', filename='js/maya_chat.js') }}"></script>
   
   <!-- Add cookie check script -->
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Function to get cookie value by name
-      function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
+    // Function to get cookie value by name
+    function getCookie(name) {
+      console.log('Getting cookie:', name);
+      console.log('All cookies:', document.cookie);
+      const value = `; ${document.cookie}`;
+      console.log('Cookie string with separator:', value);
+      const parts = value.split(`; ${name}=`);
+      console.log('Split parts:', parts);
+      if (parts.length === 2) {
+        const cookieValue = parts.pop().split(';').shift();
+        console.log('Found cookie value:', cookieValue);
+        return cookieValue;
       }
+      console.log('Cookie not found');
+      return null;
+    }
 
+    // Function to safely parse JSON
+    function safeJSONParse(str) {
+      try {
+        console.log('Attempting to parse:', str);
+        // Remove the outer quotes and unescape the inner content
+        const unquoted = str.replace(/^"|"$/g, '');
+        console.log('After removing outer quotes:', unquoted);
+        // Replace escaped quotes and commas
+        const cleanStr = unquoted.replace(/\\"/g, '"').replace(/\\054/g, ',');
+        console.log('Cleaned string:', cleanStr);
+        const parsed = JSON.parse(cleanStr);
+        console.log('Successfully parsed:', parsed);
+        return parsed;
+      } catch (e) {
+        console.error('Error parsing JSON:', e);
+        return null;
+      }
+    }
+
+    // Function to check user type and update UI
+    function checkUserTypeAndUpdateUI() {
+      console.log('Checking user type and updating UI...');
       // Get the asendhealth cookie
       const asendhealthCookie = getCookie('asendhealth');
+      console.log('Asendhealth cookie:', asendhealthCookie);
       let userType = 'patient'; // Default to patient
 
       if (asendhealthCookie) {
-        try {
-          const cookieData = JSON.parse(decodeURIComponent(asendhealthCookie));
-          userType = cookieData.userType || 'patient';
-        } catch (e) {
-          console.error('Error parsing asendhealth cookie:', e);
+        console.log('Raw cookie value:', asendhealthCookie);
+        const cookieData = safeJSONParse(asendhealthCookie);
+        console.log('Parsed cookie data:', cookieData);
+        
+        if (cookieData && typeof cookieData.userType === 'string') {
+          userType = cookieData.userType.toLowerCase();
+          console.log('Extracted user type:', userType);
         }
+      } else {
+        console.log('No asendhealth cookie found');
       }
 
       // Get the options bar
-      const optionsBar = document.querySelector('.options-bar');
-      console.debug(optionsBar)
+      const optionsBar = document.getElementById('options-bar-id');
+      console.log('Options bar element:', optionsBar);
+      console.log('Final user type:', userType);
+
       if (optionsBar) {
-        console.debug("userType:" + userType)
-        // Only show options for providers
-        if (userType !== 'provider') {
+        // Show options only for providers
+        if (userType === 'provider') {
+          optionsBar.style.display = 'block';
+          console.log('Showing options bar for provider');
+        } else {
           optionsBar.style.display = 'none';
+          console.log('Hiding options bar for non-provider');
         }
+      } else {
+        console.error('Options bar element not found');
       }
+    }
+
+    // Run the check when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('DOM Content Loaded - Running initial check');
+      checkUserTypeAndUpdateUI();
     });
+
+    // Also run the check after a short delay to ensure all elements are loaded
+    setTimeout(function() {
+      console.log('Running delayed check');
+      checkUserTypeAndUpdateUI();
+    }, 1000);
   </script>
 </head>
 <body>
@@ -276,47 +406,121 @@
         </div>
 
         <!-- Options bar -->
-      <div class="options-bar">
-        <div class="toggle-option">
-          <span>Deep Research Mode</span>
-          <label class="switch">
-            <input type="checkbox" id="researchToggle" aria-label="Toggle Deep Research Mode">
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="toggle-option">
-          <span>Diagnosis Mode</span>
-          <label class="switch">
-            <input type="checkbox" id="diagnosisToggle" aria-label="Toggle Diagnosis">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
-      </div>
-
-      
-      
-      <!-- Research sidebar -->
-      <div class="research-sidebar" id="research-sidebar">
-        <div class="research-header">
-          <h2><i class="fas fa-book-medical"></i> Research & References</h2>
-        </div>
-
-        <div class="research-status" id="research-status">
-          <div class="status-indicator">
-            <div class="pulse-dot"></div>
-            <span id="status-message">Searching web for medical information...</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-bar" id="research-progress"></div>
+        <div class="options-bar" id="options-bar-id" style="display: flex; justify-content: center; align-items: center;">
+          <div style="display: flex; gap: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span>Deep Research Mode</span>
+              <label class="switch">
+                <input type="checkbox" id="researchToggle" aria-label="Toggle Deep Research Mode">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span>Diagnosis Mode</span>
+              <label class="switch">
+                <input type="checkbox" id="diagnosisToggle" aria-label="Toggle Diagnosis">
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
-        <div class="research-content" id="research-content">
-          <div class="empty-state">
-            <i class="fas fa-search"></i>
-            <p>Medical information will appear here when you ask a question with Deep Research Mode enabled.</p>
+        <style>
+          .options-bar {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          }
+
+          .toggle-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .toggle-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .toggle-option span {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+          }
+
+          /* Switch styling */
+          .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+          }
+
+          .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+          }
+
+          .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+          }
+
+          .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+          }
+
+          input:checked + .slider {
+            background-color: #2196F3;
+          }
+
+          input:checked + .slider:before {
+            transform: translateX(26px);
+          }
+        </style>
+
+        <!-- Research sidebar -->
+        <div class="research-sidebar" id="research-sidebar">
+          <div class="research-header">
+            <h2><i class="fas fa-book-medical"></i> Research & References</h2>
+          </div>
+
+          <div class="research-status" id="research-status">
+            <div class="status-indicator">
+              <div class="pulse-dot"></div>
+              <span id="status-message">Searching web for medical information...</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-bar" id="research-progress"></div>
+            </div>
+          </div>
+
+          <div class="research-content" id="research-content">
+            <div class="empty-state">
+              <i class="fas fa-search"></i>
+              <p>Medical information will appear here when you ask a question with Deep Research Mode enabled.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -533,17 +737,196 @@
       window.location.href = "/login";
     }
     
-    // Fix keyboard event - ensure it works with enter key
+    // Define sendMessage function
+    function sendMessage() {
+      const message = userInput?.value?.trim();
+      
+      if (!message) {
+        console.log("Empty message - not sending");
+        return;
+      }
+      
+      console.log("Sending message:", message);
+      
+      // Clear input
+      userInput.value = '';
+      
+      // Add user message to chat
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'user-message';
+      messageDiv.innerHTML = `
+        <div class="message-sender"><i class="fas fa-user"></i> You</div>
+        <div class="message-content">${message}</div>
+        <div class="message-time">Just now</div>
+      `;
+      
+      if (chatMessages) {
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Show thinking indicator if enabled
+      const showThinking = thinkingToggle?.checked || false;
+      if (showThinking) {
+        // Add thinking indicator
+        const thinkingDiv = document.createElement('div');
+        thinkingDiv.id = 'maya-thinking';
+        thinkingDiv.className = 'bot-message thinking';
+        thinkingDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">
+            <div class="thinking-indicator">
+              <i class="fas fa-brain"></i>
+              <span>Maya is thinking</span>
+            </div>
+          </div>
+          <div class="message-time">Just now</div>
+        `;
+        chatMessages.appendChild(thinkingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      // Show web scraping process if research is enabled
+      const deepResearchMode = researchToggle?.checked || false;
+      if (deepResearchMode) {
+        // Show the research sidebar if it's hidden
+        const researchSidebar = document.getElementById('research-sidebar');
+        if (researchSidebar) {
+          researchSidebar.classList.add('active');
+        }
+        
+        // Reset and show research status
+        const researchStatus = document.getElementById('research-status');
+        if (researchStatus) {
+          researchStatus.style.display = 'block';
+        }
+        
+        // Start the animation
+        if (typeof startScrapingAnimation === 'function') {
+          startScrapingAnimation();
+        }
+      }
+      
+      // Prepare API call payload
+      const payload = {
+        query: message,
+        point_id: pointId || "",
+        deep_research_mode: deepResearchMode,
+        show_thinking: showThinking
+      };
+      
+      console.log("API payload:", payload);
+      
+      // Call API
+      fetch('/api/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        console.log("API response status:", response.status);
+        if (!response.ok) throw new Error(`Server error: ${response.status}`);
+        return response.text();
+      })
+      .then(text => {
+        console.log("Response received, length:", text.length);
+        
+        // Remove thinking indicator
+        const thinkingElement = document.getElementById('maya-thinking');
+        if (thinkingElement) thinkingElement.remove();
+        
+        // Stop scraping animation
+        if (typeof stopScrapingAnimation === 'function') {
+          stopScrapingAnimation();
+        }
+        
+        // Process response
+        let data;
+        let researchContent = '';
+        
+        // Try parsing as JSON first
+        try {
+          data = JSON.parse(text);
+          console.log("Successfully parsed response as JSON");
+        } catch (e) {
+          console.log("Not JSON, processing as text with separator");
+          const parts = text.split('|||');
+          if (parts.length >= 2) {
+            data = {
+              reply: parts[0] || "",
+              research: parts[1] || ""
+            };
+            researchContent = parts[1] || "";
+          } else {
+            data = {
+              reply: text,
+              research: ""
+            };
+          }
+        }
+        
+        // Add bot message
+        const responseDiv = document.createElement('div');
+        responseDiv.className = 'bot-message';
+        responseDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">${data.reply || text}</div>
+          <div class="message-time">Just now</div>
+        `;
+        
+        if (chatMessages) {
+          chatMessages.appendChild(responseDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Update research panel if deep research mode is enabled
+        if (deepResearchMode && data.research) {
+          const researchContentEl = document.getElementById('research-content');
+          if (researchContentEl) {
+            researchContentEl.innerHTML = data.research;
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        
+        // Remove thinking indicator
+        const thinkingElement = document.getElementById('maya-thinking');
+        if (thinkingElement) thinkingElement.remove();
+        
+        // Stop scraping animation
+        if (typeof stopScrapingAnimation === 'function') {
+          stopScrapingAnimation();
+        }
+        
+        // Add error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'bot-message error-message';
+        errorDiv.innerHTML = `
+          <div class="message-sender"><i class="fas fa-robot"></i> Maya</div>
+          <div class="message-content">
+            <p><strong>Error:</strong> ${error.message}</p>
+            <p>Please try again or refresh the page.</p>
+          </div>
+        `;
+        
+        if (chatMessages) {
+          chatMessages.appendChild(errorDiv);
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+      });
+    }
+    
+    // Set up event listeners
     if (userInput) {
       userInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault(); // Prevent default to avoid newline
+          e.preventDefault();
           sendMessage();
         }
       });
     }
     
-    // Fix send button click event
     if (sendButton) {
       sendButton.addEventListener('click', sendMessage);
     }
@@ -568,16 +951,8 @@
         }
       });
     }
-    
-    // Ensure modal close button works
-    const closeResearchModal = document.getElementById('close-research-modal');
-    if (closeResearchModal && researchModal) {
-      closeResearchModal.addEventListener('click', function() {
-        researchModal.style.display = 'none';
-      });
-    }
   </script>
-  
+
   <!-- Debug scripts -->
   <script>
     // Debug panel toggle function
@@ -775,7 +1150,7 @@
       });
     }
     
-    // 4. Override/fix the sendMessage function
+    // 4. Define the sendMessage function first
     window.sendMessage = function() {
       const userInput = document.getElementById('userInput');
       const message = userInput?.value?.trim();
@@ -844,8 +1219,6 @@
         // Start the animation
         startScrapingAnimation();
       }
-      
-      // Get the current toggle states
       
       // Prepare API call payload
       const payload = {
@@ -1008,7 +1381,7 @@
       });
     };
     
-    // 5. Ensure send button uses our fixed function
+    // 5. Now set up the send button event listener after sendMessage is defined
     if (sendButton) {
       // Remove any existing event listeners by cloning and replacing
       const newSendButton = sendButton.cloneNode(true);
