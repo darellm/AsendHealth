@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcribe</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='astra-theme.css') }}" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!--link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"-->
+    <link
+        href="https://fonts.googleapis.com/css?family=DM+Sans%3A400%2C%2C700%7CForum%3A400&amp;display=fallback&amp;ver=4.9.1"
+        id="astra-google-fonts-css" media="all" rel="stylesheet" />
+    <!-- AsendHealth CSS -->
+    <link href="https://asendhealth.com/wp-content/themes/astra/assets/css/minified/main.min.css?ver=4.9.1"
+        id="astra-theme-css-css" media="all" rel="stylesheet" />
+    <link href="https://asendhealth.com/wp-includes/css/dist/block-library/style.min.css?ver=6.7.2"
+        id="wp-block-library-css" media="all" rel="stylesheet" />
+    <link href="https://asendhealth.com/wp-content/plugins/suretriggers/assets/css/st-trigger-button.css?ver=1.0.83"
+        id="st-trigger-button-style-css" media="all" rel="stylesheet" />
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        function changeContent(folder) {
+            const grid = document.getElementById('grid-content');
+
+            let content = '';
+            if (folder === 'transcribe') {
+                content = `
+                            <div class="bg-white shadow-md rounded-lg p-6 w-5/6" style="width:500px">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Speech to Text</h2>
+                                <textarea id="speechToText" class="bg-white-100 p-4 w-full h-36 border border-gray-300 rounded mb-4" readonly="true">
+                                </textarea>
+                                <p class="flex justify-center mb-8">
+                                    <button id="startButton"
+                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2" style="width:200px;height:40px">
+                                        Record
+                                    </button>
+                                    <button id="stopButton"
+                                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mx-2" style="width:200px;height:40px">
+                                        Stop
+                                    </button>
+                                    <button id="transferButton"
+                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-2" style="width:200px;height:40px">
+                                        Transfer &gt;&gt;
+                                    </button>
+                                </p>    
+                            </div>
+
+                            <!-- Text to Speech -->
+                            <div class="bg-white shadow-md rounded-lg p-6 w-5/6" style="width:500px">
+                                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Text to Speech</h2>
+                                <textarea id="textToSpeechInput" class="bg-white-100 p-4 w-full h-36 border border-gray-300 rounded mb-4"
+                                    placeholder="Enter text to convert to speech...">
+                                </textarea>
+                                <button id="textToSpeechButton"
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">
+                                    Convert to Speech
+                                </button>
+                            </div>
+                `;
+            } else if (folder === 'settings') {
+                content = `
+                    <div class="grid-rows-2 bg-white shadow-md rounded-lg p-6 col-span-2" method="post">
+                        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Settings</h2>
+                        <label for="dropdown"><b>Choose a Model/Platform:</b></label>
+                        <select id="llmModel" name="Model">
+                            <option value="option1">Groq</option>
+                            <option value="option2">llama3.2 Native</option>
+                            <option value="option3">GPT4o</option>
+                            <option value="option4">Gemini</option>
+                        </select>
+                        </br>
+                        </br>
+                        <label for="dropdown"><b>Choose a Text2Speech Service:</b></label>
+                        <select id="t2sService" name="Text2Speech">
+                            <option value="option1">Deepgram</option>
+                            <option value="option2">Google Text2Speech</option>
+                        </select>
+                        </br>
+                        </br>
+                        <label for="textarea"><b>Groq Key:</b></label>
+                        <textarea id="groq_key" class="bg-white-100 p-4 w-full h-10 border border-gray-300 rounded mb-4" placeholder="">
+                        </textarea>
+                        <label for="textarea"><b>Deepgram Key:</b></label>
+                        <textarea id="deepgram_key" class="bg-white-100 p-4 w-full h-10 border border-gray-300 rounded mb-4" placeholder="">
+                        </textarea>
+                        <p class="flex justify-center mb-8">
+                            <button id="saveButton" 
+                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2" 
+                                style="width:200px;height:40px">
+                                Save
+                            </button>
+                        </p>
+                    </div>
+                `;
+            }
+            grid.innerHTML = content;
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100 w-full min-h-screen">
+    <header
+        class="site-header header-main-layout-1 ast-primary-menu-enabled ast-logo-title-inline ast-hide-custom-menu-mobile ast-builder-menu-toggle-icon ast-mobile-header-inline"
+        id="masthead" itemid="#masthead" itemscope="itemscope" itemtype="https://schema.org/WPHeader">
+        <div data-toggle-type="dropdown" id="ast-desktop-header">
+            <div class="ast-main-header-wrap main-header-bar-wrap">
+                <div class="ast-primary-header-bar ast-primary-header main-header-bar site-header-focus-item"
+                    data-section="section-primary-header-builder">
+                    <div class="site-primary-header-wrap ast-builder-grid-row-container site-header-focus-item ast-container"
+                        data-section="section-primary-header-builder">
+                        <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+                            <div
+                                class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                                <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                                    data-section="title_tagline">
+                                    <div class="site-branding ast-site-identity" itemscope="itemscope"
+                                        itemtype="https://schema.org/Organization">
+                                        <span class="site-logo-img"><a class="custom-logo-link"
+                                                href="https://asendhealth.com/" rel="home"><img alt="AsendHealth"
+                                                    class="custom-logo" decoding="async" fetchpriority="high"
+                                                    height="203" sizes="(max-width: 424px) 100vw, 424px"
+                                                    src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                                                    srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                                                    width="424" /></a></span>
+                                    </div>
+                                    <!-- .site-branding -->
+                                </div>
+                            </div>
+                            <div
+                                class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                                <div class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                                    data-section="section-hb-menu-1">
+                                    <div class="ast-main-header-bar-alignment">
+                                        <div class="main-header-bar-navigation">
+                                            <nav aria-label="Site Navigation: Main Menu"
+                                                class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                                                id="primary-site-navigation-desktop" itemscope="itemscope"
+                                                itemtype="https://schema.org/SiteNavigationElement">
+                                                <div class="main-navigation ast-inline-flex">
+                                                    <ul class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                                                        id="ast-hf-menu-1">
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169"
+                                                            id="menu-item-1169"><a class="menu-link"
+                                                                href="https://asendhealth.com/">Home</a></li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170"
+                                                            id="menu-item-1170"><a class="menu-link"
+                                                                href="http://127.0.0.1:5000/areya">Areya</a>
+                                                        </li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1173"
+                                                            id="menu-item-1173"><a class="menu-link"
+                                                                href="http://127.0.0.1:5000/transcribe">Transcribe</a>
+                                                        </li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172"
+                                                            id="menu-item-1172"><a class="menu-link"
+                                                                href="http://127.0.0.1:5000/appointments">Appointments</a>
+                                                        </li>
+                                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171"
+                                                            id="menu-item-1171"><a class="menu-link"
+                                                                href="http://127.0.0.1:5000/dashboard">Dashboard</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--div class="ast-builder-layout-element ast-flex site-header-focus-item ast-header-button-1"
+                    data-section="section-hb-button-1">
+                    <div class="ast-builder-button-wrap ast-builder-button-size-"><a class="ast-custom-button-link"
+                        href="tel:202-555-0188" target="_self">
+                        <div class="ast-custom-button">202-555-0188</div>
+                      </a><a class="menu-link" href="tel:202-555-0188" target="_self">202-555-0188</a></div>
+                  </div-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Main Header Bar Wrap -->
+        <div class="ast-mobile-header-wrap" data-type="dropdown" id="ast-mobile-header">
+            <div class="ast-main-header-wrap main-header-bar-wrap">
+                <div class="ast-primary-header-bar ast-primary-header main-header-bar site-primary-header-wrap site-header-focus-item ast-builder-grid-row-layout-default ast-builder-grid-row-tablet-layout-default ast-builder-grid-row-mobile-layout-default"
+                    data-section="section-primary-header-builder">
+                    <div class="ast-builder-grid-row ast-builder-grid-row-has-sides ast-builder-grid-row-no-center">
+                        <div
+                            class="site-header-primary-section-left site-header-section ast-flex site-header-section-left">
+                            <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                                data-section="title_tagline">
+                                <div class="site-branding ast-site-identity" itemscope="itemscope"
+                                    itemtype="https://schema.org/Organization">
+                                    <span class="site-logo-img"><a class="custom-logo-link"
+                                            href="https://asendhealth.com/" rel="home"><img alt="AsendHealth"
+                                                class="custom-logo" decoding="async" fetchpriority="high" height="203"
+                                                sizes="(max-width: 424px) 100vw, 424px"
+                                                src="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png"
+                                                srcset="https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo.png 424w, https://asendhealth.com/wp-content/uploads/2025/04/AsendHealth-logo-300x144.png 300w"
+                                                width="424" /></a></span>
+                                </div>
+                                <!-- .site-branding -->
+                            </div>
+                        </div>
+                        <div
+                            class="site-header-primary-section-right site-header-section ast-flex ast-grid-right-section">
+                            <div class="ast-builder-layout-element ast-flex site-header-focus-item"
+                                data-section="section-header-mobile-trigger">
+                                <div class="ast-button-wrap">
+                                    <button aria-expanded="false"
+                                        class="menu-toggle main-header-menu-toggle ast-mobile-menu-trigger-fill"
+                                        type="button">
+                                        <span class="screen-reader-text">Main Menu</span>
+                                        <span class="mobile-menu-toggle-icon">
+                                            <span aria-hidden="true"
+                                                class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                                                    class="ast-mobile-svg ast-menu2-svg" fill="currentColor" height="28"
+                                                    version="1.1" viewbox="0 0 24 28" width="24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z">
+                                                    </path>
+                                                </svg></span><span aria-hidden="true"
+                                                class="ahfb-svg-iconset ast-inline-flex svg-baseline"><svg
+                                                    class="ast-mobile-svg ast-close-svg" fill="currentColor" height="24"
+                                                    version="1.1" viewbox="0 0 24 24" width="24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M5.293 6.707l5.293 5.293-5.293 5.293c-0.391 0.391-0.391 1.024 0 1.414s1.024 0.391 1.414 0l5.293-5.293 5.293 5.293c0.391 0.391 1.024 0.391 1.414 0s0.391-1.024 0-1.414l-5.293-5.293 5.293-5.293c0.391-0.391 0.391-1.024 0-1.414s-1.024-0.391-1.414 0l-5.293 5.293-5.293-5.293c-0.391-0.391-1.024-0.391-1.414 0s-0.391 1.024 0 1.414z">
+                                                    </path>
+                                                </svg></span> </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ast-mobile-header-content content-align-flex-start">
+                <div class="ast-builder-menu-1 ast-builder-menu ast-flex ast-builder-menu-1-focus-item ast-builder-layout-element site-header-focus-item"
+                    data-section="section-hb-menu-1">
+                    <div class="ast-main-header-bar-alignment">
+                        <div class="main-header-bar-navigation">
+                            <nav aria-label="Site Navigation: Main Menu"
+                                class="site-navigation ast-flex-grow-1 navigation-accessibility site-header-focus-item"
+                                id="primary-site-navigation-mobile" itemscope="itemscope"
+                                itemtype="https://schema.org/SiteNavigationElement">
+                                <div class="main-navigation ast-inline-flex">
+                                    <ul class="main-header-menu ast-menu-shadow ast-nav-menu ast-flex submenu-with-border stack-on-mobile"
+                                        id="ast-hf-menu-1">
+                                        <li
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1169">
+                                            <a class="menu-link" href="https://asendhealth.com/">Home</a>
+                                        </li>
+                                        <li
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1170">
+                                            <a class="menu-link" href="http://127.0.0.1:5000/areya">Areya</a></li>
+                                        <li
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1173">
+                                            <a class="menu-link" href="http://127.0.0.1:5000/transcribe">Transcribe</a>
+                                        </li>
+                                        <li
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1172">
+                                            <a class="menu-link"
+                                                href="http://127.0.0.1:5000/appointments">Appointments</a></li>
+                                        <li
+                                            class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1171">
+                                            <a class="menu-link" href="http://127.0.0.1:5000/dashboard">Dashboard</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container mx-auto p-4">
+        <!--h1 class="text-4xl font-bold text-center text-gray-800 mb-8">Healthcare Copilot Playground</h1-->
+        <div class="flex h-screen">
+            <!-- Tree structure on the left -->
+            <div class="w-1/6 bg-gray-200 p-4">
+                <ul class="space-y-2">
+                    <li class="font-bold cursor-pointer" onclick="changeContent('transcribe')">Transcribe</li>
+                    <li class="font-bold cursor-pointer" onclick="changeContent('settings')">Settings</li>
+                </ul>
+            </div>
+
+            <div class="w-5/6 p-4">
+                <div id="grid-content" class="grid grid-cols-2 gap-8">
+                    <div id="scrollable-text" class="overflow-y-auto h-30 border border-gray-250 col-span-2">
+                        <b>Trancription Demo:</b>
+                        </br>
+                        This demo shows how a doctor can capture speech / conversation with a patient and transcribe it
+                        into text. There are a couple things shown here,
+                        1. Click on record and speak a few sentences. The Speech to text utility will capture the audio
+                        and transcribe it into text.
+                        2. Click on stop and the recording will stop.
+                        3. Click on transfer the text to speech utility will convert the text into audio and play it out
+                        loud.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/service.js"></script>
+</body>
+
+</html>
