@@ -201,7 +201,7 @@ class MayaAgent:
 
     def _create_personalized_greeting(self) -> str:
         if not self.current_user:
-            return "Hello! I'm Maya, your AI medical assistant."
+            return "Hello! I'm Areya, your AI medical assistant."
         name = self.current_user.get('name', 'there')
         time_greeting = self._get_time_appropriate_greeting()
         greeting = f"""[AI Medical Disclaimer]
@@ -231,7 +231,7 @@ This information is for educational purposes only.
 
     def _create_prompt(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_messages([
-            SystemMessage(content="""You are Maya, an advanced medical AI assistant. 
+            SystemMessage(content="""You are Areya, an advanced medical AI assistant. 
 Format your responses exactly as follows:
 
 <response>
@@ -838,7 +838,7 @@ Format your responses exactly as follows:
 
                     
                 prompt = (
-                    "You are Maya, a medical AI assistant answering a simple medical question. "
+                    "You are Areya, a medical AI assistant answering a simple medical question. "
                     f"The user asked: '{user_input}'\n\n"
                     "Provide a COMPLETE and DETAILED explanation of this medical term or condition. "
                     "Include basic definition, causes, symptoms, and treatments if applicable. "
@@ -854,7 +854,7 @@ Format your responses exactly as follows:
             else:
                 # In deep research mode, provide comprehensive information with citations
                 prompt = (
-                    "You are Maya, a medical AI assistant providing exhaustive medical information. "
+                    "You are Areya, a medical AI assistant providing exhaustive medical information. "
                     f"The user asked: '{user_input}'\n\n"
                     "Your response should be EXTREMELY DETAILED and THOROUGH, covering all aspects of this medical topic. "
                     "Provide a comprehensive explanation that would satisfy a medical professional, with at least 800-1000 words. "
