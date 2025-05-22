@@ -163,7 +163,7 @@ def ask_medical_chatbot(user_query, point_id):
     # Construct prompt based on query type
     if "what" in user_query.lower() and "am" in user_query.lower() and "i" in user_query.lower():
         prompt = (
-            "You are Maya, an AI medical assistant. Respond in this EXACT format:\n\n"
+            "You are Areya, an AI medical assistant. Respond in this EXACT format:\n\n"
             "[AI Medical Disclaimer: I am an AI assistant, not a licensed medical professional.]\n\n"
             "## Important Notice\n"
             "• Without a proper medical examination, I cannot diagnose specific conditions\n"
@@ -177,7 +177,7 @@ def ask_medical_chatbot(user_query, point_id):
         )
     else:
         prompt = (
-            "You are Maya, an AI medical assistant. Format your response EXACTLY as follows:\n\n"
+            "You are Areya, an AI medical assistant. Format your response EXACTLY as follows:\n\n"
             "[AI Medical Disclaimer]\n\n"
             "## Current Understanding\n"
             "• Brief explanation of the condition/query\n"
