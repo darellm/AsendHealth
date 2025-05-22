@@ -1,4 +1,5 @@
 import os
+import sys
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 import requests, postgres, json, uuid
@@ -8,15 +9,56 @@ from agents import MayaAgent  # Make sure MayaAgent is defined in agents.py
 import logging
 from threading import Thread
 import asyncio
+import tempfile
+import io
+import logging
+import services.speech2text as speech2text
+import services.text2speech as text2speech
 
+# Append the path two levels up
+one_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+two_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.extend([one_level_dir, two_level_dir])
+
+
+# Initialize
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+log_file_path = os.path.join(os.path.dirname(__file__), 'config', 'server.log')
+config_file_path = os.path.join(os.path.dirname(__file__), 'config', 'configure.txt')
+
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.info(f"Logfile initialized: {log_file_path}")
+logging.info("Starting Healthcare application")
 load_dotenv()  # Load variables from .env
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.debug = True
+
+# Get API key from configure.txt
+def get_api_key(service_name):  
+    try:
+        logging.info(f"Fetching API key for service: {service_name}")
+        with open(config_file_path, 'r') as file:
+            config = file.readlines()
+            for line in config:
+                if line.startswith(service_name):
+                    api_key = line.split('=')[1].strip()
+                    logging.debug(f"API key retrieved successfully for {service_name}")
+                    return api_key
+        logging.error(f"API key for {service_name} not found in configure.txt")
+        raise Exception(f"API key for {service_name} not found")
+    except FileNotFoundError:
+        logging.error(f"Configure file not found at {config_file_path}")
+        raise Exception(f"Configure file not found at {config_file_path}")
 
 # Existing Routes
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route("/transcribe")
+def transcribe():
+    return render_template("transcribe.html")
 
 @app.route("/dashboard")
 def dashboard():
@@ -24,7 +66,7 @@ def dashboard():
 
 @app.route("/areya")
 def areya():
-    return render_template("maya.html")
+    return render_template("areya.html")
 
 # New Routes for the updated navigation
 @app.route("/home")
@@ -42,6 +84,46 @@ def feedback():
 @app.route("/history")
 def history():
     return render_template("history.html")
+
+@app.route("/process-audio", methods=['POST'])
+def process_audio_data():
+    text_input = request.json.get("text", "")
+    
+    if not text_input:
+        logging.error("No speech input provided in request")
+        return jsonify({"error": "No speech input provided"}), 400
+
+    try:
+        logging.info(f"Processing audio data with input: {text_input}")
+    except Exception as e:
+        return jsonify({"error": "No speech input provided"}), 500
+    
+    return jsonify({"transcription": text_input})
+
+@app.route("/text-to-speech", methods=['POST'])
+def text_to_speech():
+    try:
+        logging.info("Starting text-to-speech conversion")
+        DEEPGRAM_API_KEY = get_api_key('DEEPGRAM_API_KEY')
+
+        data = request.get_json()
+        text = data.get('text')
+
+        if not text:
+            logging.error("No text provided for text-to-speech")
+            return jsonify({"error": "No text provided"}), 400
+
+        logging.debug(f"Text-to-speech request received for text: {text}")
+        audio_stream = text2speech.text2speech(DEEPGRAM_API_KEY, text)
+        logging.info("Text-to-speech conversion successful")
+        audio_stream.seek(0)
+        return send_file(audio_stream, mimetype='audio/wav', as_attachment=True, download_name='output.wav')
+
+
+    except Exception as e:
+        logging.error(f"Text-to-speech conversion failed: {e}")
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 
 @app.route("/api/login", methods=["POST"])
 def api_login():
@@ -255,7 +337,7 @@ def chatbot():
                         }, {
                             "timestamp": datetime.now(timezone.utc).isoformat(),
                             "id": str(datetime.now().timestamp() + 1),
-                            "sender": "Maya",
+                            "sender": "Areya",
                             "message": reply,
                             "research": research,
                             "sources": extract_sources_from_research(research)
@@ -395,7 +477,7 @@ def api_conversations():
                         "research": None,
                         "sources": []
                     }
-                elif conv.get("sender") == "Maya" and current_group:
+                elif conv.get("sender") == "Areya" and current_group:
                     # Complete the group with Maya's response
                     current_group["response"] = conv.get("message", "")
                     current_group["research"] = conv.get("research", "")
@@ -455,7 +537,7 @@ def api_delete_conversation():
                     user_dt = datetime.fromisoformat(user_timestamp.replace('Z', '+00:00'))
                     # Look for messages within 5 seconds of the user message
                     for conv in conversations:
-                        if conv.get("sender") == "Maya":
+                        if conv.get("sender") == "Areya":
                             conv_timestamp = conv.get("timestamp")
                             if conv_timestamp and isinstance(conv_timestamp, str):
                                 try:
