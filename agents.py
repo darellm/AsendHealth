@@ -47,7 +47,7 @@ class MedicalTool(BaseModel):
     function: Callable
 
 
-class MayaAgent:
+class AreyaAgent:
     def __init__(self):
         # Try to initialize the LLM with error handling
         try:
@@ -231,16 +231,19 @@ This information is for educational purposes only.
 
     def _create_prompt(self) -> ChatPromptTemplate:
         return ChatPromptTemplate.from_messages([
-            SystemMessage(content="""You are Areya, an advanced medical AI assistant. 
-Format your responses exactly as follows:
+            SystemMessage(content="""You are Areya, an advanced medical AI assistant.
+YOU MUST FORMAT YOUR RESPONSES EXACTLY AS FOLLOWS:
 
 <response>
-[Final answer goes here]
+[Your complete, well-structured answer using Markdown headings (e.g., ## What is X?) goes here.]
 </response>
 
 <research>
-[Research citations and sources go here]
-</research>"""),
+[Brief notes, general information, or citations. If none, state "No specific research notes for this query." DO NOT OMIT THIS TAG.]
+</research>
+
+Strictly adhere to this format.
+"""),
             MessagesPlaceholder(variable_name="chat_history"),
             MessagesPlaceholder(variable_name="agent_scratchpad"),
             HumanMessage(content="{input}")
@@ -831,67 +834,78 @@ Format your responses exactly as follows:
             # Simple greeting detection and response
             if any(word.lower() in user_input.lower() for word in self.greeting_words):
                 greeting = self._create_personalized_greeting()
-                return f"{greeting}\n|||\n<h3>No Research Needed</h3>"
+                return f"{greeting}\\n|||\\n<h3>No Research Needed</h3>"
 
+            current_temperature = 0.7
             # For standard medical queries in simple mode, use a clearer prompt template
             if not deep_research_mode:
-
-                    
+                current_temperature = 0.4 # Lower temperature for more focused normal mode
                 prompt = (
-                    "You are Areya, a medical AI assistant answering a simple medical question. "
+                    "You are Areya, a medical AI assistant. "
                     f"The user asked: '{user_input}'\n\n"
-                    "Provide a COMPLETE and DETAILED explanation of this medical term or condition. "
-                    "Include basic definition, causes, symptoms, and treatments if applicable. "
-                    "Your answer MUST be thorough and educational - never just a simple one-line definition. "
-                    "FORMAT YOUR RESPONSE EXACTLY AS FOLLOWS:\n\n"
+                    "Please provide a clear, concise, and well-structured explanation. "
+                    "Use Markdown for formatting. Your response should include:\n"
+                    "- A main title (e.g., using ##).\n"
+                    "- Sub-headings for key sections (e.g., Definition, Symptoms, Causes, Treatment using ###).\n"
+                    "- **Bold text** for important keywords and terms.\n"
+                    "- Bulleted lists for items like symptoms or treatment options.\n"
+                    "- Horizontal rules (---) to visually separate major sections if appropriate.\n"
+                    "Ensure the information is accurate and easy to understand.\n\n"
+                    "FORMAT YOUR RESPONSE STRICTLY AS FOLLOWS (within the <response> tags):\n\n"
                     "<response>\n"
-                    "[Your complete detailed explanation here]\n"
+                    "## [Main Title for the Topic]\n\n"
+                    "**[Section Sub-Heading e.g., Definition]**\n\n"
+                    "[Detailed paragraph for this section. Use **bolding** for key terms.]\n\n"
+                    "---\n\n"
+                    "### [Next Section Sub-Heading e.g., Symptoms]\n\n"
+                    "*   [Symptom 1 or Point 1]\n"
+                    "*   [Symptom 2 or Point 2]\n"
+                    "    *   [Nested point if applicable]\n\n"
+                    "[Further explanation for this section if needed.]\n\n"
+                    "---\n"
+                    "[Continue with other sections as appropriate, following this structure.]\n\n"
+                    "### Important Note\n\n"
+                    "[Any crucial disclaimers or important points.]\n"
                     "</response>\n\n"
                     "<research>\n"
-                    "[General information about this topic]\n"
-                    "</research>"
+                    "[Brief note, e.g., 'General medical information compiled from standard knowledge.']\n"
+                    "</research>\n\n"
+                    "ADHERE TO THIS FORMAT EXACTLY."
                 )
             else:
                 # In deep research mode, provide comprehensive information with citations
                 prompt = (
                     "You are Areya, a medical AI assistant providing exhaustive medical information. "
-                    f"The user asked: '{user_input}'\n\n"
-                    "Your response should be EXTREMELY DETAILED and THOROUGH, covering all aspects of this medical topic. "
-                    "Provide a comprehensive explanation that would satisfy a medical professional, with at least 800-1000 words. "
-                    "Include detailed sections on:\n"
-                    "- Definition and classification\n"
-                    "- Epidemiology and prevalence data\n"
-                    "- Pathophysiology (detailed biological mechanisms)\n"
-                    "- Causes and risk factors\n"
-                    "- Signs and symptoms (with full clinical presentation)\n"
-                    "- Diagnostic criteria and tests\n"
-                    "- Treatment approaches (pharmacological and non-pharmacological)\n"
-                    "- Management strategies\n"
-                    "- Prognosis and complications\n"
-                    "- Prevention methods\n"
-                    "- Current research directions\n\n"
-                    "FORMAT YOUR RESPONSE EXACTLY AS FOLLOWS:\n\n"
-                    "<response>\n"
-                    "[Your comprehensive detailed explanation here - minimum 800 words]\n"
-                    "</response>\n\n"
-                    "<research>\n"
-                    "[Detailed research information and sources - include specific citations]\n"
-                    "</research>"
+                    f"User asked: '{user_input}'\\n\\n"
+                    "Your response must be EXTREMELY DETAILED (800-1000 words), using Markdown headings for sections like: "
+                    "## Definition, ## Epidemiology, ## Pathophysiology, ## Causes, ## Symptoms, ## Diagnosis, ## Treatment, ## Management, ## Prognosis, ## Prevention, ## Research Directions.\\n\\n"
+                    "FORMAT YOUR RESPONSE STRICTLY AS FOLLOWS:\\n\\n"
+                    "<response>\\n"
+                    "[Your comprehensive explanation with Markdown headings.]\\n"
+                    "</response>\\n\\n"
+                    "<research>\\n"
+                    "[Note on research approach, e.g., 'Information compiled from established medical knowledge.']\\n"
+                    "</research>\\n\\n"
+                    "ADHERE TO THIS FORMAT EXACTLY."
                 )
 
             # Make direct API call to Ollama
             try:
                 headers = {"Content-Type": "application/json"}
-                request_data = {    
+                current_num_predict = 3000 # Default for deep research
+                if not deep_research_mode:
+                    current_num_predict = 1024 # Reduced for normal mode for speed
+
+                request_data = {
                     "model": "gemma3:4b",
                     "prompt": prompt,
                     "stream": False,
-                    "temperature": 0.7,
-                    "raw": True,
-                    "num_predict": 3000  # Increased token limit for comprehensive responses
+                    "temperature": current_temperature, 
+                    "raw": False,  # Changed from True to False
+                    "num_predict": current_num_predict
                 }
                 
-                logging.info("Making direct API call to Ollama")
+                logging.info(f"Making direct API call to Ollama. Mode: {'Deep Research' if deep_research_mode else 'Normal'}. Num_predict: {current_num_predict}, Temp: {current_temperature}, Raw: False")
                 api_response = requests.post(
                     "http://localhost:11434/api/generate",
                     headers=headers,
@@ -901,20 +915,65 @@ Format your responses exactly as follows:
                 api_response.raise_for_status()
                 response_data = api_response.json()
                 
-                # Extract the response content
-                response_text = response_data.get("response", "")
+                # Extract the response content - adjusted for raw: False
+                # When raw is False, the response is typically in response_data['response'] for /api/generate
+                # or response_data['message']['content'] for /api/chat if that endpoint structure was used.
+                # Sticking to /api/generate, 'response' key should hold the string.
+                response_text = response_data.get("response", "").strip()
                 
-                # Extract response and research sections
-                response_match = re.search(r'<response>([\s\S]*?)</response>', response_text, re.DOTALL)
-                research_match = re.search(r'<research>([\s\S]*?)</research>', response_text, re.DOTALL)
-                
-                final_response = response_match.group(1).strip() if response_match else response_text
-                research_content = research_match.group(1).strip() if research_match else ""
+                logging.info(f"Raw LLM Output (first 200 chars): {response_text[:200]}")
 
-                # Ensure we have a valid response
+                # More flexible regex for extracting response and research sections
+                response_match = re.search(r'<\s*response\s*>([\s\S]*?)<\s*/\s*response\s*>', response_text, re.DOTALL | re.IGNORECASE)
+                research_match = re.search(r'<\s*research\s*>([\s\S]*?)<\s*/\s*research\s*>', response_text, re.DOTALL | re.IGNORECASE)
+                
+                final_response = ""
+                research_content = ""
+
+                if response_match:
+                    final_response = response_match.group(1).strip()
+                    logging.info("Successfully extracted content from <response> tags.")
+                else:
+                    logging.warning("Could not find <response> tags. Using full response_text as final_response.")
+                    # Fallback: if no <response> tag, check if the whole text seems like a plausible response
+                    # and doesn't contain <research> tags within it confusingly.
+                    if not research_match or research_match.start() > len(response_text) * 0.8: # if research is very late or not there
+                        final_response = response_text 
+                    else: # response_text likely contains research tag, try to split
+                        final_response = response_text.split("<research>")[0].strip() if "<research>" in response_text.lower() else response_text
+
+
+                if research_match:
+                    research_content = research_match.group(1).strip()
+                    logging.info("Successfully extracted content from <research> tags.")
+                else:
+                    logging.warning("Could not find <research> tags.")
+                    # If response_match was found but research_match wasn't, try to get text after response
+                    if response_match and response_match.end() < len(response_text):
+                         potential_research = response_text[response_match.end():].strip()
+                         if potential_research.lower().startswith("<research>") and potential_research.lower().endswith("</research>"): # Should have been caught by regex
+                             pass # Regex should have caught this
+                         elif len(potential_research) > 5: # Some arbitrary content left
+                             research_content = "Note: Could not reliably parse research section. Content found after response block: " + potential_research[:100] + "..."
+                         else:
+                             research_content = "No specific research notes provided."
+                    elif not final_response and response_text: # No tags found at all
+                         research_content = "Research section not identified."
+                    else:
+                         research_content = "No specific research notes provided."
+
+
+                # Ensure we have a valid response, even after fallback
                 if not final_response or len(final_response.strip()) < 20:
-                    final_response = "I apologize, but I couldn't generate a proper response. Please try rephrasing your question."
-                    research_content = "<h3>No Results</h3><p>Unable to generate research information for this query.</p>"
+                    if response_text and len(response_text.strip()) > 20 and not response_match and not research_match :
+                        # If no tags were found at all, and raw response_text is substantial, use it as final_response
+                        logging.info("No tags found, using full response_text as final_response as it seems substantial.")
+                        final_response = response_text
+                        research_content = "Research section not identified; full output treated as response."
+                    else:
+                        logging.warning("Final response is too short or empty after parsing. Generating fallback.")
+                        final_response = self._generate_fallback_response(user_input).replace("<response>","").replace("</response>","") # Use internal fallback
+                        research_content = "Default fallback response generated."
                 
                 # For deep research mode, we'll perform an actual web search and replace research_content
                 if deep_research_mode:
@@ -925,9 +984,12 @@ Format your responses exactly as follows:
                         complete_response = f"{final_response}|||{research_html}"
                     except Exception as search_error:
                         logging.error(f"Error in deep research mode: {search_error}")
-                        complete_response = f"{final_response}|||{research_content}"
+                        complete_response = f"{final_response}|||{research_content}" # Use LLM's research if web search fails
                 else:
-                    complete_response = f"{final_response}|||<h3>Simple Mode</h3><p>Enable Deep Research Mode for detailed medical information.</p>"
+                    # Ensure research_content has some value for normal mode
+                    if not research_content.strip():
+                        research_content = "Standard medical information presented."
+                    complete_response = f"{final_response}|||<h3>Simple Mode Context</h3><p>{research_content}</p>"
                 
                 return complete_response
                 
@@ -1148,5 +1210,8 @@ This information is for educational purposes only.
 
 def ask_medical_chatbot_sync(user_query: str, point_id: str, deep_research_mode: bool = False, patient_context: Optional[Dict[str, Any]] = None) -> str:
     """Synchronous wrapper for ask_medical_chatbot"""
-    agent = MayaAgent()
+    agent = AreyaAgent()
     return asyncio.run(agent.process_message(user_query, patient_context, deep_research_mode))
+
+# if __name__ == "__main__":
+#     print(ask_medical_chatbot_sync("what is a stroke ?",None,False,None))
