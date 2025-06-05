@@ -4,9 +4,9 @@ import ssl
 import certifi
 import json
 from google.cloud.sql.connector import Connector
-import psycopg2
-import psycopg2.extras
 import logging
+from datetime import date, time
+import pg8000.dbapi
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -39,23 +39,56 @@ def get_connection():
    )
    return conn
 
+# Helper function to convert cursor rows to dictionaries
+def _rows_to_dicts(rows, description):
+    if not description:
+        return []
+    column_names = [desc[0] for desc in description]
+    return [dict(zip(column_names, row)) for row in rows]
+
+def _row_to_dict(row, description):
+    if row is None:
+        return None
+    
+    keys = []
+    zipped_data = []
+    try:
+        if description is None:
+            logging.error("_row_to_dict: Received None for description.")
+            return None # Or raise an error, depending on desired handling
+
+        keys = [col[0] for col in description]
+        # Log the inputs to zip
+        logging.debug(f"_row_to_dict: description_keys = {keys}")
+        logging.debug(f"_row_to_dict: row_values = {row}")
+        
+        zipped_data = list(zip(keys, row)) # Materialize to log
+        logging.debug(f"_row_to_dict: zipped_data for dict() = {zipped_data}")
+        
+        # The problematic call
+        result = dict(zipped_data)
+        return result
+    except Exception as e:
+        logging.error(f"Error in _row_to_dict: {e}. Keys: {keys}, Row: {row}, Zipped: {zipped_data if zipped_data else 'N/A'}", exc_info=True)
+        raise # Re-raise the exception
+
 #####################
 # LOCATION FUNCTIONS
 #####################
 
 # CREATE: Insert a new location record
-def create_location(location_name, address, location_type, phone_number=None):
+def create_location(location_name, address, location_type, phone_number=None, district=None, state=None):
     conn = get_connection()
     try:
         cur = conn.cursor()
         query = """
             INSERT INTO locations (
-                location_id, location_name, address, location_type, phone_number
+                location_id, location_name, address, location_type, phone_number, district, state
             )
-            VALUES (uuid_generate_v4(), %s, %s, %s, %s)
+            VALUES (uuid_generate_v4(), %s, %s, %s, %s, %s, %s)
             RETURNING location_id;
         """
-        cur.execute(query, (location_name, address, location_type, phone_number))
+        cur.execute(query, (location_name, address, location_type, phone_number, district, state))
         new_id = cur.fetchone()[0]
         conn.commit()
         logging.info(f"Created location with id: {new_id}")
@@ -71,23 +104,26 @@ def create_location(location_name, address, location_type, phone_number=None):
 # READ: Retrieve a location record by id
 def get_location_by_id(location_id):
     conn = get_connection()
+    cur = None
     try:
         cur = conn.cursor()
         query = "SELECT * FROM locations WHERE location_id = %s;"
         cur.execute(query, (location_id,))
-        location = cur.fetchone()
-        logging.info(f"Fetched location: {location}")
-        return location
+        location_tuple = cur.fetchone()
+        location_dict = _row_to_dict(location_tuple, cur.description)
+        logging.info(f"Fetched location: {location_dict}")
+        return location_dict
     except Exception as e:
         logging.error(f"An error occurred while fetching location: {e}")
         return None
     finally:
-        cur.close()
+        if cur: cur.close()
         conn.close()
 
 # READ: Retrieve all locations, optionally filter by type
 def get_locations(location_type=None):
     conn = get_connection()
+    cur = None
     try:
         cur = conn.cursor()
         if location_type:
@@ -96,13 +132,14 @@ def get_locations(location_type=None):
         else:
             query = "SELECT * FROM locations ORDER BY location_name;"
             cur.execute(query)
-        locations = cur.fetchall()
-        return locations
+        location_tuples = cur.fetchall()
+        locations_list = _rows_to_dicts(location_tuples, cur.description)
+        return locations_list
     except Exception as e:
         logging.error(f"An error occurred while fetching locations: {e}")
         return []
     finally:
-        cur.close()
+        if cur: cur.close()
         conn.close()
 
 # UPDATE: Update a location's record
@@ -319,6 +356,7 @@ def unlink_doctor_from_location(doctor_id, location_id):
 # READ: Retrieve doctors practicing at a specific location
 def get_doctors_by_location(location_id):
     conn = get_connection()
+    cur = None
     try:
         cur = conn.cursor()
         query = """
@@ -329,13 +367,14 @@ def get_doctors_by_location(location_id):
             ORDER BY d.last_name, d.first_name;
         """
         cur.execute(query, (location_id,))
-        doctors = cur.fetchall()
-        return doctors
+        doctor_tuples = cur.fetchall()
+        doctors_list = _rows_to_dicts(doctor_tuples, cur.description)
+        return doctors_list
     except Exception as e:
         logging.error(f"An error occurred while fetching doctors by location: {e}")
         return []
     finally:
-        cur.close()
+        if cur: cur.close()
         conn.close()
 
 # READ: Search doctors by specialization (includes locations)
@@ -447,31 +486,34 @@ def validate_patient(username, password):
     # This example uses plain text passwords, which is INSECURE.
     # Use libraries like passlib or werkzeug.security for hashing.
     conn = get_connection()
+    logging.info(f"Connection object type: {type(conn)}")
+    cur = None  # Initialize cur to None
     try:
-        cur = conn.cursor()
-        #query = "SELECT * FROM %s WHERE username = %s AND password = %s"
+        cur = conn.cursor() # Remove cursor_factory
         query = "SELECT * FROM patients WHERE username = %s AND password = %s"
         logging.info(query)
         cur.execute(query, (username, password))
-        user_data = cur.fetchone()
-        if user_data:
-            logging.info(f"User {username} authenticated successfully.")
-            return user_data # Return patient_id on success
-            # stored_password = user_data[1]
-            # Replace this with a proper hash check:
-            # from werkzeug.security import check_password_hash
-            # if check_password_hash(stored_password, password):
-            # if stored_password == password: # INSECURE - REPLACE
-            #     logging.info(f"User {username} authenticated successfully.")
-            #     return user_data[0] # Return patient_id on success
+        user_data_tuple = cur.fetchone()
+        if user_data_tuple:
+            logging.info(f"User {username} authenticated successfully (raw tuple: {user_data_tuple}).")
+            # Get column names from cursor description
+            if cur.description:
+                column_names = [desc[0] for desc in cur.description]
+                user_data_dict = dict(zip(column_names, user_data_tuple))
+                logging.info(f"User data as dict: {user_data_dict}")
+                return user_data_dict
+            else:
+                logging.error(f"Could not get column descriptions for user {username}.")
+                return None
         else:
             logging.warning(f"Authentication failed for user {username}: User not found or incorrect password provided")
             return None
     except Exception as e:
-        logging.error(f"An error occurred during authentication: {e}")
+        logging.error(f"An error occurred during authentication: {e}", exc_info=True) # Add exc_info for full traceback
         return None
     finally:
-        cur.close()
+        if cur: # Check if cur was successfully assigned
+            cur.close()
         conn.close()
 
 # CREATE: Insert a new patient record
@@ -510,7 +552,7 @@ def create_patient(username, password, first_name, last_name, email, date_of_bir
 def get_patient_by_id(patient_id):
     conn = get_connection()
     try:
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) # Use DictCursor
+        cur = conn.cursor()
         query = "SELECT * FROM patients WHERE patient_id = %s;"
         cur.execute(query, (patient_id,))
         patient = cur.fetchone()
@@ -625,7 +667,7 @@ def create_appointment(patient_id, doctor_id, location_id, appointment_date, app
 def get_patient_appointments(patient_id):
     conn = get_connection()
     try:
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) # Use DictCursor
+        cur = conn.cursor()
         query = """
             SELECT
                 a.appointment_id, a.appointment_date, a.appointment_time,
@@ -653,7 +695,7 @@ def get_patient_appointments(patient_id):
 def get_doctor_appointments(doctor_id):
     conn = get_connection()
     try:
-        cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) # Use DictCursor
+        cur = conn.cursor()
         query = """
             SELECT
                 a.appointment_id, a.appointment_date, a.appointment_time,
@@ -728,5 +770,114 @@ def delete_appointment(appointment_id):
         return False
     finally:
         cur.close()
-        conn.close() 
+        conn.close()
+
+def get_appointment_page_details():
+    conn = None
+    cur = None
+    all_specializations = set()
+    # all_location_names = set() # No longer needed directly here for filters if using specific state/district filters
+    all_location_types = set()
+    all_states = set()
+    districts_by_state = {}
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        # 1. Fetch all locations (hospitals and clinics) including district and state
+        cur.execute("SELECT location_id, location_name, address, district, state, phone_number, location_type FROM locations ORDER BY state, district, location_name;")
+        locations_tuples = cur.fetchall()
+        all_locations_list = _rows_to_dicts(locations_tuples, cur.description)
+
+        # 2. Fetch all doctors and their location links
+        cur.execute("""
+            SELECT d.doctor_id, d.first_name, d.last_name, d.specialization, d.experience_years, d.qualifications, dl.location_id AS doctor_works_at_location_id
+            FROM doctors d
+            JOIN doctor_locations dl ON d.doctor_id = dl.doctor_id
+            ORDER BY d.last_name, d.first_name;
+        """)
+        all_doctors_with_links_tuples = cur.fetchall()
+        all_doctors_with_links_list = _rows_to_dicts(all_doctors_with_links_tuples, cur.description)
+
+        # 3. Create a map of location_id to list of doctors for efficient lookup
+        doctors_by_location_map = {}
+        for doc in all_doctors_with_links_list:
+            if doc and doc.get('specialization'): # Collect specializations
+                all_specializations.add(doc['specialization'])
+            
+            loc_id_for_doctor = doc.get('doctor_works_at_location_id')
+            if loc_id_for_doctor:
+                if loc_id_for_doctor not in doctors_by_location_map:
+                    doctors_by_location_map[loc_id_for_doctor] = []
+                doctor_info = {k: v for k, v in doc.items() if k != 'doctor_works_at_location_id'}
+                doctors_by_location_map[loc_id_for_doctor].append(doctor_info)
+
+        # 4. Process locations, attach their doctors, and collect filter data
+        processed_locations = []
+        for loc_dict in all_locations_list:
+            if not loc_dict:
+                continue
+
+            current_location_state = loc_dict.get('state')
+            current_location_district = loc_dict.get('district')
+            current_location_type = loc_dict.get('location_type')
+            current_location_id = loc_dict.get('location_id')
+
+            if current_location_state:
+                all_states.add(current_location_state)
+                if current_location_district:
+                    if current_location_state not in districts_by_state:
+                        districts_by_state[current_location_state] = set()
+                    districts_by_state[current_location_state].add(current_location_district)
+
+            if current_location_type:
+                all_location_types.add(current_location_type)
+
+            doctors_for_this_location = doctors_by_location_map.get(current_location_id, [])
+            
+            processed_loc = loc_dict.copy() # loc_dict now includes district and state
+            processed_loc['doctors'] = doctors_for_this_location
+            
+            processed_locations.append(processed_loc)
+
+        # Convert sets to sorted lists for JSON compatibility and consistent ordering
+        final_districts_by_state = {state: sorted(list(dist_set)) for state, dist_set in districts_by_state.items()}
+
+        # 5. Prepare filter options
+        filter_options = {
+            "states": sorted(list(all_states)),
+            "districts_by_state": final_districts_by_state,
+            "specialties": sorted(list(all_specializations)),
+            "types": sorted(list(l_type for l_type in all_location_types if l_type is not None))
+            # "names" filter can be removed if state/district/type/specialty are primary search mechanisms
+            # or kept if direct name search is still desired alongside. For now, removing.
+        }
+        
+        specialty_ratings = {} # Placeholder - implement if needed
+
+        logging.info(f"Prepared appointment page details with {len(processed_locations)} locations and dynamic filters.")
+        return {
+            "locations": processed_locations,
+            "filter_options": filter_options,
+            "specialty_ratings": specialty_ratings # Keep for consistency, even if empty
+        }
+
+    except Exception as e:
+        logging.error(f"Error in get_appointment_page_details: {e}", exc_info=True)
+        return {
+            "locations": [],
+            "filter_options": {
+                "states": [],
+                "districts_by_state": {},
+                "specialties": [],
+                "types": [],
+                "error": "Could not load filter options from database."
+            },
+            "specialty_ratings": {},
+            "error": "Could not load appointment data from database."
+        }
+    finally:
+        if cur: cur.close()
+        if conn: conn.close()
 
